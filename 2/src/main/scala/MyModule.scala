@@ -25,9 +25,19 @@ object MyModule {
     msg.format(name, n, f(n))
   }
 
+  def isSorted[A](as: Array[A], ordered: (A,A) => Boolean): Boolean = {
+    def loop(index: Int): Boolean =
+      if (index >= as.length - 1) true
+      else if (ordered(as(index), as(index+1))) false
+      else loop(index + 1)
+    loop(0)
+  }
+
   def main(args: Array[String]): Unit = {
     println(formatResult("absolute value", -42, abs))
     println(formatResult("factorial", 7, factorial))
     println(fib(10))
+
+
   }
 }
