@@ -92,8 +92,11 @@ object List {
   def foldRightAsLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B =
     foldLeft(reverse(as), z)((b,a) => f(a,b))
 
+  def append[A](as: List[A], a: A): List[A] =
+    foldRight(as, Cons(a, Nil))((x: A, xs: List[A]) => Cons(x,xs))
 
-
+  def appendLeft[A](as: List[A], a: A): List[A] =
+    foldLeft(reverse(as), Cons(a, Nil))((xs: List[A], x: A) => Cons(x,xs))
 
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
@@ -162,6 +165,12 @@ object List {
 
     val reverseList = reverse(List(1,2,3))
     println(reverseList)
+
+    //Ex 3.14
+    val foldRightAppend = append(List(1,2,3), 4)
+    println(foldRightAppend)
+    val foldLeftAppend = appendLeft(List(1,2,3), 4)
+    println(foldLeftAppend)
   }
 }
 
