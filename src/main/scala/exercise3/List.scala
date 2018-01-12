@@ -84,6 +84,9 @@ object List {
   def lengthLeft[A](as: List[A]): Int =
     foldLeft(as, 0)((x, _) => x + 1)
 
+  def reverse[A](as: List[A]): List[A] =
+    foldLeft(as, Nil:List[A])((x: List[A], y: A) => Cons(y, x))
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -146,6 +149,11 @@ object List {
     println(productLeftList)
     val lengthLeftList = lengthLeft(List(1,2,3))
     println(lengthLeftList)
+
+    //Ex 3.12
+
+    val reverseList = reverse(List(1,2,3))
+    println(reverseList)
   }
 }
 
