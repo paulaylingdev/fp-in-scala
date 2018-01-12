@@ -30,6 +30,15 @@ object List {
     case Nil => Cons(head, Nil)
   }
 
+//  def drop[A](l: List[A], n: Int): List[A] = l match {
+//    case Nil => Nil
+//    case Cons(_, xs) => if (n <= 1) xs else drop(xs, n-1)
+//  }
+
+  def drop[A](l: List[A], n: Int): List[A] =
+    if (n <= 0) l
+    else drop(tail(l), n-1)
+
 
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
@@ -60,6 +69,9 @@ object List {
 
     println(setHead(5,NilList))
 
+    //Ex 3.4
+    val dropList = drop(List(1,2,3,4,5), 3)
+    println(dropList)
   }
 }
 
