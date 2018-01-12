@@ -101,6 +101,9 @@ object List {
   def concat[A](as: List[List[A]]): List[A] =
     foldLeft(as, Nil:List[A])((x: List[A], xs: List[A]) => foldLeft(xs, x)((xs, x) => appendLeft(xs, x)))
 
+  def addOne(as: List[Int]): List[Int] =
+    foldLeft(reverse(as), Nil:List[Int])((xs, x) => Cons(x + 1, xs))
+
   def transformElements[A](as: List[A])(f: A => A): List[A] =
     foldLeft(reverse(as), Nil:List[A])((xs, x) => Cons(f(x), xs))
 
@@ -183,8 +186,11 @@ object List {
     println(concatLists)
 
     //Ex 3.16
-    val addOneList = transformElements(List(1,2,3,4,5))(x => x + 1)
+    val addOneList = addOne(List(1,2,3,4,5))
     println(addOneList)
+
+    val addOneList2 = transformElements(List(1,2,3,4,5))(x => x + 1)
+    println(addOneList2)
 
     //Ex 3.17
 
