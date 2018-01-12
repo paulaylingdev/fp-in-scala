@@ -39,6 +39,10 @@ object List {
     if (n <= 0) l
     else drop(tail(l), n-1)
 
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
+    case Nil => Nil
+    case Cons(x, xs) => if (f(x)) dropWhile(xs, f) else l
+  }
 
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
@@ -72,6 +76,11 @@ object List {
     //Ex 3.4
     val dropList = drop(List(1,2,3,4,5), 3)
     println(dropList)
+
+    //Ex 3.5
+    //Drop while head is 1
+    val dropWhileList = dropWhile(List(1,1,1,1,2,3,4,5), (x: Int) => x == 1)
+    println(dropWhileList)
   }
 }
 
