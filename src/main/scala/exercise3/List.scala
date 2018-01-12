@@ -112,6 +112,10 @@ object List {
     println(dropWhile2List)
 
     //Ex 3.7 No. foldRight is evaluated before f is called
+
+    //Ex 3.8
+    val threepointeight = foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_))
+    println(threepointeight)
   }
 }
 
