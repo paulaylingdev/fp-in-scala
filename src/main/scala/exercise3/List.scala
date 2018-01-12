@@ -87,6 +87,14 @@ object List {
   def reverse[A](as: List[A]): List[A] =
     foldLeft(as, Nil:List[A])((x: List[A], y: A) => Cons(y, x))
 
+  def foldLeftAsRight[A, B](as: List[A], z: B)(f: (B, A) => B): B = ???
+
+  def foldRightAsLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B =
+    foldLeft(reverse(as), z)((b,a) => f(a,b))
+
+
+
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
