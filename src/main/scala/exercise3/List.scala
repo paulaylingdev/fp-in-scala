@@ -44,6 +44,11 @@ object List {
     case _ => l
   }
 
+  def dropWhile2[A](l: List[A])(f: A => Boolean): List[A] = l match {
+    case Cons(x, xs) if f(x) => dropWhile2(xs)(f)
+    case _ => l
+  }
+
   def init[A](l: List[A]): List[A] = l match {
     case Cons(_, Nil) => Nil
     case Cons(x, xs) => Cons(x, init(xs))
@@ -90,6 +95,9 @@ object List {
     //Ex 3.6
     val initList = init(List(1,2,3,4))
     println(initList)
+
+    val dropWhile2List = dropWhile2(List(1,2,3,4,5))(x => x < 4)
+    println(dropWhile2List)
   }
 }
 
