@@ -110,6 +110,8 @@ object List {
 
     val dropWhile2List = dropWhile2(List(1,2,3,4,5))(x => x < 4)
     println(dropWhile2List)
+
+    //Ex 3.7 No. foldRight is evaluated before f is called
   }
 }
 
