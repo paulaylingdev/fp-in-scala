@@ -60,14 +60,29 @@ object List {
       case Cons(x, xs) => f(x, foldRight(xs, z)(f))
     }
 
-  def sum2(ns: List[Int]) =
+  def sum2(ns: List[Int]): Int =
     foldRight(ns, 0)((x,y) => x + y)
 
-  def product2(ns: List[Double]) =
+  def product2(ns: List[Double]): Double =
     foldRight(ns, 1.0)(_ * _)
 
   def length[A](as: List[A]): Int =
-    foldRight(as, 0)((x, y) => 1 + y)
+    foldRight(as, 0)((_, y) => 1 + y)
+
+  def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B =
+    as match {
+      case Nil => z
+      case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
+    }
+
+  def sumLeft(ns: List[Int]): Int =
+    foldLeft(ns, 0)(_ + _)
+
+  def productLeft(ns: List[Double]): Double =
+    foldLeft(ns, 1.0)(_ * _)
+
+  def lengthLeft[A](as: List[A]): Int =
+    foldLeft(as, 0)((x, _) => x + 1)
 
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
@@ -123,6 +138,14 @@ object List {
     //Ex. 3.9
     val lengthList = length(List(1,2,3,4,5))
     println("length of list is " + lengthList)
+
+    //Ex 3.10 + 3.11
+    val sumLeftList = sumLeft(List(1,2,3))
+    println(sumLeftList)
+    val productLeftList = productLeft(List(1,2,3))
+    println(productLeftList)
+    val lengthLeftList = lengthLeft(List(1,2,3))
+    println(lengthLeftList)
   }
 }
 
