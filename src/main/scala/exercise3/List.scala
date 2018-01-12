@@ -44,6 +44,11 @@ object List {
     case _ => l
   }
 
+  def init[A](l: List[A]): List[A] = l match {
+    case Cons(_, Nil) => Nil
+    case Cons(x, xs) => Cons(x, init(xs))
+  }
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -81,6 +86,10 @@ object List {
     //Drop while head is 1
     val dropWhileList = dropWhile(List(1,1,1,1,2,3,4,5), (x: Int) => x == 1)
     println(dropWhileList)
+
+    //Ex 3.6
+    val initList = init(List(1,2,3,4))
+    println(initList)
   }
 }
 
