@@ -66,6 +66,9 @@ object List {
   def product2(ns: List[Double]) =
     foldRight(ns, 1.0)(_ * _)
 
+  def length[A](as: List[A]): Int =
+    foldRight(as, 0)((x, y) => 1 + y)
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -116,6 +119,10 @@ object List {
     //Ex 3.8
     val threepointeight = foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_))
     println(threepointeight)
+
+    //Ex. 3.9
+    val lengthList = length(List(1,2,3,4,5))
+    println("length of list is " + lengthList)
   }
 }
 
