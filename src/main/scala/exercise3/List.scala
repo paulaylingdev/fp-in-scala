@@ -98,6 +98,9 @@ object List {
   def appendLeft[A](as: List[A], a: A): List[A] =
     foldLeft(reverse(as), Cons(a, Nil))((xs: List[A], x: A) => Cons(x,xs))
 
+  def concat[A](as: List[List[A]]): List[A] =
+    foldLeft(as, Nil:List[A])((x: List[A], xs: List[A]) => foldLeft(xs, x)((xs, x) => appendLeft(xs, x)))
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -171,6 +174,10 @@ object List {
     println(foldRightAppend)
     val foldLeftAppend = appendLeft(List(1,2,3), 4)
     println(foldLeftAppend)
+
+    //Ex 3.15
+    val concated = concat(List(List(1,2), List(3,4), List(5,6)))
+    println(concated)
   }
 }
 
