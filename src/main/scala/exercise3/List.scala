@@ -40,8 +40,8 @@ object List {
     else drop(tail(l), n-1)
 
   def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
-    case Nil => Nil
-    case Cons(x, xs) => if (f(x)) dropWhile(xs, f) else l
+    case Cons(x, xs) if f(x) => dropWhile(xs, f)
+    case _ => l
   }
 
   def main(args: Array[String]): Unit = {
