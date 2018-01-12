@@ -20,6 +20,16 @@ object List {
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
 
+  def tail[A](as: List[A]): List[A] = as match {
+    case Nil => Nil
+    case Cons(_, xs) => xs
+  }
+
+  def setHead[A](head: A, as: List[A]): List[A] = as match {
+    case Cons(_, xs) => Cons(head, xs)
+    case Nil => Cons(head, Nil)
+  }
+
 
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
@@ -36,6 +46,20 @@ object List {
     }
 
     println("x is " + x)
+
+    //Ex 3.2
+    val tailList = tail(List(1,2,3,4,5))
+    println(tailList)
+
+    val NilList = tail(Nil)
+    println(NilList)
+
+    //Ex 3.3
+    val headList = setHead(9,List(1,2,3,4,5))
+    println(headList)
+
+    println(setHead(5,NilList))
+
   }
 }
 
