@@ -122,6 +122,12 @@ object List {
   def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] =
     concat(foldLeft(as, Nil:List[List[B]])((xs, x) => append(xs,f(x))))
 
+  def filterFlatMap[A](as: List[A])(f: A => Boolean): List[A] =
+    flatMap(as)(x => {
+      if (f(x)) List(x)
+      else Nil
+    })
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -222,6 +228,10 @@ object List {
     //Ex 3.20
     val flatMapList = flatMap(List(1,2,3,4,5))(x => List(x,x))
     println(flatMapList)
+
+    //Ex 3.21
+    val filterFlatMapList = filterFlatMap(List(1,2,3,4,5))(x => (x % 2) == 1)
+    println(filterFlatMapList)
   }
 }
 
