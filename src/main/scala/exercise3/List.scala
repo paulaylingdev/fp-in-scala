@@ -119,6 +119,9 @@ object List {
       else xs
     })
 
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] =
+    concat(foldLeft(as, Nil:List[List[B]])((xs, x) => append(xs,f(x))))
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -215,6 +218,10 @@ object List {
     //Ex 3.19
     val oddValuesOnly = filter(List(1,2,3,4,5))(x => (x % 2) == 1)
     println(oddValuesOnly)
+
+    //Ex 3.20
+    val flatMapList = flatMap(List(1,2,3,4,5))(x => List(x,x))
+    println(flatMapList)
   }
 }
 
