@@ -107,6 +107,9 @@ object List {
   def transformElements[A](as: List[A])(f: A => A): List[A] =
     foldLeft(reverse(as), Nil:List[A])((xs, x) => Cons(f(x), xs))
 
+  def doubleToString(as: List[Double]): List[String] =
+    foldLeft(as, Nil:List[String])((xs, x) => append(xs, x.toString))
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -193,7 +196,8 @@ object List {
     println(addOneList2)
 
     //Ex 3.17
-
+    val doubleToStringList = doubleToString(List(1.0,2.0,3.0,4.0,5.0))
+    println(doubleToStringList)
 
 
   }
