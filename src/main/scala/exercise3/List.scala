@@ -110,6 +110,9 @@ object List {
   def doubleToString(as: List[Double]): List[String] =
     foldLeft(as, Nil:List[String])((xs, x) => append(xs, x.toString))
 
+  def map[A,B](as: List[A])(f: A => B): List[B] =
+    foldLeft(as, Nil:List[B])((xs, x) => append(xs, f(x)))
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -198,6 +201,10 @@ object List {
     //Ex 3.17
     val doubleToStringList = doubleToString(List(1.0,2.0,3.0,4.0,5.0))
     println(doubleToStringList)
+
+    //Ex 3.18
+    val mapExample = map(List(1,2,3,4,5))(x => "a" + x.toString)
+    println(mapExample)
 
 
   }
