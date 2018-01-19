@@ -113,6 +113,12 @@ object List {
   def map[A,B](as: List[A])(f: A => B): List[B] =
     foldLeft(as, Nil:List[B])((xs, x) => append(xs, f(x)))
 
+  def filter[A](as: List[A])(f: A => Boolean): List[A] =
+    foldLeft(as, Nil:List[A])((xs, x) => {
+      if (f(x)) append(xs,x)
+      else xs
+    })
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -206,7 +212,9 @@ object List {
     val mapExample = map(List(1,2,3,4,5))(x => "a" + x.toString)
     println(mapExample)
 
-
+    //Ex 3.19
+    val oddValuesOnly = filter(List(1,2,3,4,5))(x => (x % 2) == 1)
+    println(oddValuesOnly)
   }
 }
 
