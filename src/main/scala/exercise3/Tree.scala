@@ -20,9 +20,30 @@ object Tree {
 
   def main(args: Array[String]): Unit = {
 
+    /* singleLeafTree
+          | 1 |
+     */
     val singleLeafTree = Leaf(1)
+
+    /* singleBranchTree
+           _  |  _
+       | 1 |    | 2 |
+     */
     val singleBranchTree = Branch(Leaf(1), Leaf(2))
+
+    /* treeInBook
+             _     |     _
+       _   |   _       _   |   _
+    | a |    | b |   | c |   | d |
+
+     */
     val treeInBook = Branch(Branch(Leaf("a"), Leaf("b")), Branch(Leaf("c"), Leaf("d")))
+
+    /* intTree
+             _     |     _
+       _   |   _       _   |   _
+    | 1 |    | 2 |   | 3 |   | 4 |
+     */
     val intTree = Branch(Branch(Leaf(1), Leaf(2)), Branch(Leaf(3), Leaf(4)))
 
     println("##Size")
