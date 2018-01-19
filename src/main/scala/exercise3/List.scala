@@ -1,7 +1,9 @@
 package main.scala.exercise3
 
 sealed trait List[+A]
+
 case object Nil extends List[Nothing]
+
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
 object List {
@@ -30,14 +32,14 @@ object List {
     case Nil => Cons(head, Nil)
   }
 
-//  def drop[A](l: List[A], n: Int): List[A] = l match {
-//    case Nil => Nil
-//    case Cons(_, xs) => if (n <= 1) xs else drop(xs, n-1)
-//  }
+  //  def drop[A](l: List[A], n: Int): List[A] = l match {
+  //    case Nil => Nil
+  //    case Cons(_, xs) => if (n <= 1) xs else drop(xs, n-1)
+  //  }
 
   def drop[A](l: List[A], n: Int): List[A] =
     if (n <= 0) l
-    else drop(tail(l), n-1)
+    else drop(tail(l), n - 1)
 
   def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
     case Cons(x, xs) if f(x) => dropWhile(xs, f)
@@ -61,7 +63,7 @@ object List {
     }
 
   def sum2(ns: List[Int]): Int =
-    foldRight(ns, 0)((x,y) => x + y)
+    foldRight(ns, 0)((x, y) => x + y)
 
   def product2(ns: List[Double]): Double =
     foldRight(ns, 1.0)(_ * _)
@@ -85,42 +87,42 @@ object List {
     foldLeft(as, 0)((x, _) => x + 1)
 
   def reverse[A](as: List[A]): List[A] =
-    foldLeft(as, Nil:List[A])((x: List[A], y: A) => Cons(y, x))
+    foldLeft(as, Nil: List[A])((x: List[A], y: A) => Cons(y, x))
 
   def foldLeftAsRight[A, B](as: List[A], z: B)(f: (B, A) => B): B = ???
 
   def foldRightAsLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B =
-    foldLeft(reverse(as), z)((b,a) => f(a,b))
+    foldLeft(reverse(as), z)((b, a) => f(a, b))
 
   def append[A](as: List[A], a: A): List[A] =
-    foldRight(as, Cons(a, Nil))((x: A, xs: List[A]) => Cons(x,xs))
+    foldRight(as, Cons(a, Nil))((x: A, xs: List[A]) => Cons(x, xs))
 
   def appendLeft[A](as: List[A], a: A): List[A] =
-    foldLeft(reverse(as), Cons(a, Nil))((xs: List[A], x: A) => Cons(x,xs))
+    foldLeft(reverse(as), Cons(a, Nil))((xs: List[A], x: A) => Cons(x, xs))
 
   def concat[A](as: List[List[A]]): List[A] =
-    foldLeft(as, Nil:List[A])((x: List[A], xs: List[A]) => foldLeft(xs, x)((xs, x) => appendLeft(xs, x)))
+    foldLeft(as, Nil: List[A])((x: List[A], xs: List[A]) => foldLeft(xs, x)((xs, x) => appendLeft(xs, x)))
 
   def addOne(as: List[Int]): List[Int] =
-    foldLeft(reverse(as), Nil:List[Int])((xs, x) => Cons(x + 1, xs))
+    foldLeft(reverse(as), Nil: List[Int])((xs, x) => Cons(x + 1, xs))
 
   def transformElements[A](as: List[A])(f: A => A): List[A] =
-    foldLeft(reverse(as), Nil:List[A])((xs, x) => Cons(f(x), xs))
+    foldLeft(reverse(as), Nil: List[A])((xs, x) => Cons(f(x), xs))
 
   def doubleToString(as: List[Double]): List[String] =
-    foldLeft(as, Nil:List[String])((xs, x) => append(xs, x.toString))
+    foldLeft(as, Nil: List[String])((xs, x) => append(xs, x.toString))
 
-  def map[A,B](as: List[A])(f: A => B): List[B] =
-    foldLeft(as, Nil:List[B])((xs, x) => append(xs, f(x)))
+  def map[A, B](as: List[A])(f: A => B): List[B] =
+    foldLeft(as, Nil: List[B])((xs, x) => append(xs, f(x)))
 
   def filter[A](as: List[A])(f: A => Boolean): List[A] =
-    foldLeft(as, Nil:List[A])((xs, x) => {
-      if (f(x)) append(xs,x)
+    foldLeft(as, Nil: List[A])((xs, x) => {
+      if (f(x)) append(xs, x)
       else xs
     })
 
-  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] =
-    concat(foldLeft(as, Nil:List[List[B]])((xs, x) => append(xs,f(x))))
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] =
+    concat(foldLeft(as, Nil: List[List[B]])((xs, x) => append(xs, f(x))))
 
   def filterFlatMap[A](as: List[A])(f: A => Boolean): List[A] =
     flatMap(as)(x => {
@@ -130,14 +132,34 @@ object List {
 
   def combineValues(as: List[Int], bs: List[Int]): List[Int] = (as, bs) match {
     case (Nil, _) | (_, Nil) => Nil
-    case (Cons(h1,t1), Cons(h2, t2)) => Cons(h1+h2, combineValues(t1,t2))
+    case (Cons(h1, t1), Cons(h2, t2)) => Cons(h1 + h2, combineValues(t1, t2))
   }
 
-  def zipWith[A](as: List[A], bs: List[A])(f: (A,A) => A): List[A] = (as, bs) match {
+  def zipWith[A](as: List[A], bs: List[A])(f: (A, A) => A): List[A] = (as, bs) match {
     case (Nil, _) | (_, Nil) => Nil
-    case (Cons(h1,t1), Cons(h2,t2)) => Cons(f(h1,h2), zipWith(t1,t2)(f))
+    case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2)(f))
   }
 
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    def loop(aup: List[A], aub: List[A]): Boolean = {
+      (aup, aub) match {
+        case (Nil, _) => false
+        case (_, Nil) => false
+        case (Cons(h1, t1), Cons(h2, t2)) =>
+          (t1, t2) match {
+            case (_, Nil) =>
+              if (h1 == h2) true
+              else loop(t1, sub)
+            case (Nil, _) => false
+            case (_, _) =>
+              if (h1 == h2) loop(t1, t2)
+              else loop(t1, sub)
+          }
+      }
+    }
+
+    loop(sup, sub)
+  }
 
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
@@ -145,7 +167,7 @@ object List {
     val ex3: List[String] = Cons("a", Cons("b", Nil))
 
     //Answer for 3.1 is x = 3 (3rd pattern)
-    val x = List(1,2,3,4,5) match {
+    val x = List(1, 2, 3, 4, 5) match {
       case Cons(x, Cons(2, Cons(4, _))) => x
       case Nil => 42
       case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
@@ -156,101 +178,116 @@ object List {
     println("x is " + x)
 
     //Ex 3.2
-    val tailList = tail(List(1,2,3,4,5))
+    val tailList = tail(List(1, 2, 3, 4, 5))
     println(tailList)
 
     val NilList = tail(Nil)
     println(NilList)
 
     //Ex 3.3
-    val headList = setHead(9,List(1,2,3,4,5))
+    val headList = setHead(9, List(1, 2, 3, 4, 5))
     println(headList)
 
-    println(setHead(5,NilList))
+    println(setHead(5, NilList))
 
     //Ex 3.4
-    val dropList = drop(List(1,2,3,4,5), 3)
+    val dropList = drop(List(1, 2, 3, 4, 5), 3)
     println(dropList)
 
     //Ex 3.5
     //Drop while head is 1
-    val dropWhileList = dropWhile(List(1,1,1,1,2,3,4,5), (x: Int) => x == 1)
+    val dropWhileList = dropWhile(List(1, 1, 1, 1, 2, 3, 4, 5), (x: Int) => x == 1)
     println(dropWhileList)
 
     //Ex 3.6
-    val initList = init(List(1,2,3,4))
+    val initList = init(List(1, 2, 3, 4))
     println(initList)
 
-    val dropWhile2List = dropWhile2(List(1,2,3,4,5))(x => x < 4)
+    val dropWhile2List = dropWhile2(List(1, 2, 3, 4, 5))(x => x < 4)
     println(dropWhile2List)
 
     //Ex 3.7 No. foldRight is evaluated before f is called
 
     //Ex 3.8
-    val threepointeight = foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_))
+    val threepointeight = foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _))
     println(threepointeight)
 
     //Ex. 3.9
-    val lengthList = length(List(1,2,3,4,5))
+    val lengthList = length(List(1, 2, 3, 4, 5))
     println("length of list is " + lengthList)
 
     //Ex 3.10 + 3.11
-    val sumLeftList = sumLeft(List(1,2,3))
+    val sumLeftList = sumLeft(List(1, 2, 3))
     println(sumLeftList)
-    val productLeftList = productLeft(List(1,2,3))
+    val productLeftList = productLeft(List(1, 2, 3))
     println(productLeftList)
-    val lengthLeftList = lengthLeft(List(1,2,3))
+    val lengthLeftList = lengthLeft(List(1, 2, 3))
     println(lengthLeftList)
 
     //Ex 3.12
 
-    val reverseList = reverse(List(1,2,3))
+    val reverseList = reverse(List(1, 2, 3))
     println(reverseList)
 
     //Ex 3.14
-    val foldRightAppend = append(List(1,2,3), 4)
+    val foldRightAppend = append(List(1, 2, 3), 4)
     println(foldRightAppend)
-    val foldLeftAppend = appendLeft(List(1,2,3), 4)
+    val foldLeftAppend = appendLeft(List(1, 2, 3), 4)
     println(foldLeftAppend)
 
     //Ex 3.15
-    val concatLists = concat(List(List(1,2), List(3,4), List(5,6)))
+    val concatLists = concat(List(List(1, 2), List(3, 4), List(5, 6)))
     println(concatLists)
 
     //Ex 3.16
-    val addOneList = addOne(List(1,2,3,4,5))
+    val addOneList = addOne(List(1, 2, 3, 4, 5))
     println(addOneList)
 
-    val addOneList2 = transformElements(List(1,2,3,4,5))(x => x + 1)
+    val addOneList2 = transformElements(List(1, 2, 3, 4, 5))(x => x + 1)
     println(addOneList2)
 
     //Ex 3.17
-    val doubleToStringList = doubleToString(List(1.0,2.0,3.0,4.0,5.0))
+    val doubleToStringList = doubleToString(List(1.0, 2.0, 3.0, 4.0, 5.0))
     println(doubleToStringList)
 
     //Ex 3.18
-    val mapExample = map(List(1,2,3,4,5))(x => "a" + x.toString)
+    val mapExample = map(List(1, 2, 3, 4, 5))(x => "a" + x.toString)
     println(mapExample)
 
     //Ex 3.19
-    val oddValuesOnly = filter(List(1,2,3,4,5))(x => (x % 2) == 1)
+    val oddValuesOnly = filter(List(1, 2, 3, 4, 5))(x => (x % 2) == 1)
     println(oddValuesOnly)
 
     //Ex 3.20
-    val flatMapList = flatMap(List(1,2,3,4,5))(x => List(x,x))
+    val flatMapList = flatMap(List(1, 2, 3, 4, 5))(x => List(x, x))
     println(flatMapList)
 
     //Ex 3.21
-    val filterFlatMapList = filterFlatMap(List(1,2,3,4,5))(x => (x % 2) == 1)
+    val filterFlatMapList = filterFlatMap(List(1, 2, 3, 4, 5))(x => (x % 2) == 1)
     println(filterFlatMapList)
 
     //Ex 3.22
-    val combineIntsList = combineValues(List(1,2,3), List(4,5,6))
+    val combineIntsList = combineValues(List(1, 2, 3), List(4, 5, 6))
     println(combineIntsList)
 
     //Ex 3.23
-    val zipWithList = zipWith(List(5.0,6.0,7.0), List(5.0,6.0,7.0))(_ * _)
+    val zipWithList = zipWith(List(5.0, 6.0, 7.0), List(5.0, 6.0, 7.0))(_ * _)
     println(zipWithList)
+
+    //Ex 3.24
+    val hasSub = hasSubsequence(List(1, 2, 3, 4), List(1, 2))
+    val hasSub2 = hasSubsequence(List(1, 2, 3, 4), List(2, 3))
+    val hasSub3 = hasSubsequence(List(1, 2, 3, 4), List(4))
+    val noSub = hasSubsequence(List(1, 2, 3, 4), List(5))
+    val noSub2 = hasSubsequence(List(1, 2, 3, 4), List(1, 2, 4))
+    val noSub3 = hasSubsequence(List(1, 2, 3, 4), List(1, 2, 3, 4, 5))
+
+    println(hasSub)
+    println(hasSub2)
+    println(hasSub3)
+    println(noSub)
+    println(noSub2)
+    println(noSub3)
   }
 }
 
