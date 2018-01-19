@@ -128,6 +128,14 @@ object List {
       else Nil
     })
 
+  def combineValues(as: List[Int], bs: List[Int]): List[Int] = (as, bs) match {
+    case (Nil, _) | (_, Nil) => Nil
+    case (Cons(h1,t1), Cons(h2, t2)) => Cons(h1+h2, combineValues(t1,t2))
+  }
+
+
+
+
   def main(args: Array[String]): Unit = {
     val ex1: List[Double] = Nil
     val ex2: List[Int] = Cons(1, Nil)
@@ -232,6 +240,10 @@ object List {
     //Ex 3.21
     val filterFlatMapList = filterFlatMap(List(1,2,3,4,5))(x => (x % 2) == 1)
     println(filterFlatMapList)
+
+    //Ex 3.22
+    val combineIntsList = combineValues(List(1,2,3), List(4,5,6))
+    println(combineIntsList)
   }
 }
 
