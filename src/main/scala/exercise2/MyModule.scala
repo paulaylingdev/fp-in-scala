@@ -31,8 +31,8 @@ object MyModule {
     @annotation.tailrec
     def loop(index: Int): Boolean =
       if (index >= as.length - 1) true
-      else if (ordered(as(index), as(index+1))) false
-      else loop(index + 1)
+      else if (ordered(as(index), as(index+1))) loop(index + 1)
+      else false
     loop(0)
   }
 
@@ -50,6 +50,8 @@ object MyModule {
     println(formatResult("factorial", 7, factorial))
     println(fib(10))
 
+    println(isSorted(Array(1,2,3), (x: Int, y: Int) => x < y).toString)
+    println(isSorted(Array(1,2,1), (x: Int, y: Int) => x < y).toString)
 
   }
 }
