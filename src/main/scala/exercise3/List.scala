@@ -133,7 +133,10 @@ object List {
     case (Cons(h1,t1), Cons(h2, t2)) => Cons(h1+h2, combineValues(t1,t2))
   }
 
-
+  def zipWith[A](as: List[A], bs: List[A])(f: (A,A) => A): List[A] = (as, bs) match {
+    case (Nil, _) | (_, Nil) => Nil
+    case (Cons(h1,t1), Cons(h2,t2)) => Cons(f(h1,h2), zipWith(t1,t2)(f))
+  }
 
 
   def main(args: Array[String]): Unit = {
@@ -244,6 +247,10 @@ object List {
     //Ex 3.22
     val combineIntsList = combineValues(List(1,2,3), List(4,5,6))
     println(combineIntsList)
+
+    //Ex 3.23
+    val zipWithList = zipWith(List(5.0,6.0,7.0), List(5.0,6.0,7.0))(_ * _)
+    println(zipWithList)
   }
 }
 
