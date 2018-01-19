@@ -13,13 +13,27 @@ object Tree {
     case Branch(left, right) => 1 + size(left) + size(right)
   }
 
+  def maximum(t: Tree[Int]): Int = t match {
+    case Leaf(value) => value
+    case Branch(left, right) => maximum(left).max(maximum(right))
+  }
+
   def main(args: Array[String]): Unit = {
 
     val singleLeafTree = Leaf(1)
-    val exampleTree = Branch(Leaf(1), Leaf(2))
+    val singleBranchTree = Branch(Leaf(1), Leaf(2))
+    val treeInBook = Branch(Branch(Leaf("a"), Leaf("b")), Branch(Leaf("c"), Leaf("d")))
+    val intTree = Branch(Branch(Leaf(1), Leaf(2)), Branch(Leaf(3), Leaf(4)))
 
+    println("##Size")
     println(size(singleLeafTree))
-    println(size(exampleTree))
+    println(size(singleBranchTree))
+    println(size(treeInBook))
+
+    println("##Maximum")
+    println(maximum(singleLeafTree))
+    println(maximum(singleBranchTree))
+    println(maximum(intTree))
 
   }
 }
