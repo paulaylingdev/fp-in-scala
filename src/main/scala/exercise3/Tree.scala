@@ -19,7 +19,7 @@ object Tree {
   }
 
   def depth[A](t: Tree[A]): Int = t match {
-    case Leaf(_) => 1
+    case Leaf(_) => 0
     case Branch(left, right) => 1 + depth(left).max(depth(right))
   }
 
@@ -27,6 +27,23 @@ object Tree {
     case Leaf(value) => Leaf(f(value))
     case Branch(left, right) => Branch(map(left)(f), map(right)(f))
   }
+
+  def fold[A, B](t: Tree[A])(f: A => B)(g: (B, B) => B): B = t match {
+    case Leaf(value) => f(value)
+    case Branch(left, right) => g(fold(left)(f)(g), fold(right)(f)(g))
+  }
+
+  def foldSize[A](t: Tree[A]): Int =
+    fold(t)(_ => 1)((left, right) => 1 + left + right)
+
+  def foldMaximum(t: Tree[Int]): Int =
+    fold(t)(a => a)((left, right) => left.max(right))
+
+  def foldDepth[A](t: Tree[A]): Int =
+    fold(t)(_ => 0)((left, right) => 1 + left.max(right))
+
+  def foldMap[A, B](t: Tree[A])(f: A => B): Tree[B] =
+    fold(t)(a => Leaf(f(a)): Tree[B])((left, right) => Branch(left, right))
 
   def main(args: Array[String]): Unit = {
 
@@ -88,6 +105,28 @@ object Tree {
     println(map(treeInBook)(_.toUpperCase))
     println(map(treeInBook)(_ == "a"))
 
+    printBlueln("### Fold Methods ###")
 
+    printBlueln("Size")
+    println(foldSize(singleLeafTree))
+    println(foldSize(singleBranchTree))
+    println(foldSize(treeInBook))
+
+    printBlueln("Maximum")
+    println(foldMaximum(singleLeafTree))
+    println(foldMaximum(singleBranchTree))
+    println(foldMaximum(intTree))
+
+    printBlueln("Depth")
+    println(foldDepth(singleLeafTree))
+    println(foldDepth(singleBranchTree))
+    println(foldDepth(treeInBook))
+    println(foldDepth(leftSidedTree))
+
+    printBlueln("Map")
+    println(foldMap(singleLeafTree)(_ + 1))
+    println(foldMap(singleBranchTree)(_ * 2))
+    println(foldMap(treeInBook)(_.toUpperCase))
+    println(foldMap(treeInBook)(_ == "a"))
   }
 }
