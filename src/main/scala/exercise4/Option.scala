@@ -26,8 +26,15 @@ case class Some[+A](get: A) extends Option[A]
 
 case object None extends Option[Nothing]
 
-
 object Main {
+
+  def mean(xs: Seq[Double]): Option[Double] =
+    if (xs.isEmpty) None
+    else Some(xs.sum / xs.length)
+
+  def variance(xs: Seq[Double]): Option[Double] =
+    mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
+
   def main(args: Array[String]): Unit = {
     def printBlueln(a: Any) =
       println(Console.BLUE + a + Console.RESET)
@@ -54,6 +61,10 @@ object Main {
     printBlueln("filter")
     println(number5.filter(_ == 4))
     println(number5.filter(_ == 5))
+
+    printBlueln("variance")
+    println(variance(Seq(1.0, 2.0, 3.0)))
+    println(variance(Seq()))
 
   }
 }
