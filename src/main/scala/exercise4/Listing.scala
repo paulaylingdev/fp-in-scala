@@ -31,6 +31,10 @@ object Listing {
     else
       xs.sum / xs.length
 
+  def mean_1(xs: IndexedSeq[Double], onEmpty: Double): Double =
+    if (xs.isEmpty) onEmpty
+    else xs.sum / xs.length
+
   def main(args: Array[String]): Unit = {
 
     def printBlueln(a: Any) =
@@ -43,5 +47,7 @@ object Listing {
     printBlueln("=====\n4.2\n=====")
     println(mean(List(1, 2, 3)))
     //println(mean(List())) //Uncomment to see effect
+    println(mean_1(IndexedSeq(1,2,3), 0))
+    println(mean_1(IndexedSeq(), 0))
   }
 }
