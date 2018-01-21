@@ -23,6 +23,11 @@ object Tree {
     case Branch(left, right) => 1 + depth(left).max(depth(right))
   }
 
+  def map[A, B](t: Tree[A])(f: A => B): Tree[B] = t match {
+    case Leaf(value) => Leaf(f(value))
+    case Branch(left, right) => Branch(map(left)(f), map(right)(f))
+  }
+
   def main(args: Array[String]): Unit = {
 
     /* singleLeafTree
@@ -58,21 +63,31 @@ object Tree {
      */
     val leftSidedTree = Branch(Branch(Branch(Leaf(3), Leaf(4)), Leaf(2)), Leaf(1))
 
-    println(Console.BLUE + "Size" + Console.RESET)
+    def printBlueln[A](s: A): Unit =
+      println(Console.BLUE + s + Console.RESET)
+
+    printBlueln("Size")
     println(size(singleLeafTree))
     println(size(singleBranchTree))
     println(size(treeInBook))
 
-    println(Console.BLUE + "Maximum" + Console.RESET)
+    printBlueln("Maximum")
     println(maximum(singleLeafTree))
     println(maximum(singleBranchTree))
     println(maximum(intTree))
 
-    println(Console.BLUE + "Depth" + Console.RESET)
+    printBlueln("Depth")
     println(depth(singleLeafTree))
     println(depth(singleBranchTree))
     println(depth(treeInBook))
     println(depth(leftSidedTree))
+
+    printBlueln("Map")
+    println(map(singleLeafTree)(_ + 1))
+    println(map(singleBranchTree)(_ * 2))
+    println(map(treeInBook)(_.toUpperCase))
+    println(map(treeInBook)(_ == "a"))
+
 
   }
 }
