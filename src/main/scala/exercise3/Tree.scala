@@ -18,6 +18,11 @@ object Tree {
     case Branch(left, right) => maximum(left).max(maximum(right))
   }
 
+  def depth[A](t: Tree[A]): Int = t match {
+    case Leaf(_) => 1
+    case Branch(left, right) => 1 + depth(left).max(depth(right))
+  }
+
   def main(args: Array[String]): Unit = {
 
     /* singleLeafTree
@@ -35,7 +40,6 @@ object Tree {
              _     |     _
        _   |   _       _   |   _
     | a |    | b |   | c |   | d |
-
      */
     val treeInBook = Branch(Branch(Leaf("a"), Leaf("b")), Branch(Leaf("c"), Leaf("d")))
 
@@ -46,15 +50,29 @@ object Tree {
      */
     val intTree = Branch(Branch(Leaf(1), Leaf(2)), Branch(Leaf(3), Leaf(4)))
 
-    println("##Size")
+    /* leftSidedTree
+                    _     |     _
+              _   |   _          | 1 |
+        _   |   _      | 2 |
+     | 3 |   | 4 |
+     */
+    val leftSidedTree = Branch(Branch(Branch(Leaf(3), Leaf(4)), Leaf(2)), Leaf(1))
+
+    println(Console.BLUE + "Size" + Console.RESET)
     println(size(singleLeafTree))
     println(size(singleBranchTree))
     println(size(treeInBook))
 
-    println("##Maximum")
+    println(Console.BLUE + "Maximum" + Console.RESET)
     println(maximum(singleLeafTree))
     println(maximum(singleBranchTree))
     println(maximum(intTree))
+
+    println(Console.BLUE + "Depth" + Console.RESET)
+    println(depth(singleLeafTree))
+    println(depth(singleBranchTree))
+    println(depth(treeInBook))
+    println(depth(leftSidedTree))
 
   }
 }
