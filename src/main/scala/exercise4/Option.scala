@@ -39,13 +39,17 @@ object Main {
 
   val abs0: Option[Double] => Option[Double] = lift(math.abs)
 
-  def insuaranceRateQuote(age: Int, numberOfSpeedingTickets: Int): Double = age * numberOfSpeedingTickets
+  def insuranceRateQuote(age: Int, numberOfSpeedingTickets: Int): Double = age * numberOfSpeedingTickets
 
-//  def parseInsuranceRateQuote(age: String, numberOfSpeedingTickets: String): Option[Double] = {
-//    val optAge: Option[Int] = Try(age.toInt)
-//    val optTickets: Option[Int] = Try(numberOfSpeedingTickets.toInt)
-//    insuaranceRateQuote(optAge, optTickets)
-//  }
+  def parseInsuranceRateQuote(age: String, numberOfSpeedingTickets: String): Option[Double] = {
+    val optAge: Option[Int] = Try {
+      age.toInt
+    }
+    val optTickets: Option[Int] = Try {
+      numberOfSpeedingTickets.toInt
+    }
+    map2(optAge, optTickets)(insuranceRateQuote)
+  }
 
   def Try[A](a: => A): Option[A] =
     try Some(a)
@@ -53,43 +57,45 @@ object Main {
       case e: Exception => None
     }
 
-  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
-    a.flatMap(aa => b.map(bb => f(aa,bb)))
+  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    a.flatMap(aa => b.map(bb => f(aa, bb)))
 
   def main(args: Array[String]): Unit = {
-    def printBlueln(a: Any) =
+    def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
 
     val number5 = Some(5)
     val nothing = None
 
-    printBlueln("Map")
+    printBlueLine("Map")
     println(nothing.map(_ => "bob"))
     println(number5.map(_.toRadians))
 
-    printBlueln("flatMap")
+    printBlueLine("flatMap")
     println(nothing.flatMap(_ => Some("bob")))
     println(number5.flatMap(a => Some(a.toRadians)))
 
-    printBlueln("getOrElse")
+    printBlueLine("getOrElse")
     println(nothing.getOrElse("bob"))
     println(number5.getOrElse(6))
 
-    printBlueln("orElse")
+    printBlueLine("orElse")
     println(nothing.orElse(Some("bob")))
     println(number5.orElse(Some(6)))
 
-    printBlueln("filter")
+    printBlueLine("filter")
     println(number5.filter(_ == 4))
     println(number5.filter(_ == 5))
 
-    printBlueln("variance")
+    printBlueLine("variance")
     println(variance(Seq(1.0, 2.0, 3.0)))
     println(variance(Seq()))
 
-    printBlueln("map2")
-    println(map2(Some(5), Some(2.0))((a,b) => (a * b).toString))
+    printBlueLine("map2")
+    println(map2(Some(5), Some(2.0))((a, b) => (a * b).toString))
 
-
+    printBlueLine("insurance")
+    println(parseInsuranceRateQuote("12", "4"))
+    println(parseInsuranceRateQuote("bob", "4"))
   }
 }
