@@ -41,17 +41,20 @@ object Main {
 
   def insuaranceRateQuote(age: Int, numberOfSpeedingTickets: Int): Double = age * numberOfSpeedingTickets
 
-  def parseInsuranceRateQuote(age: String, numberOfSpeedingTickets: String): Option[Double] = {
-    val optAge: Option[Int] = Try(age.toInt)
-    val optTickets: Option[Int] = Try(numberOfSpeedingTickets.toInt)
+//  def parseInsuranceRateQuote(age: String, numberOfSpeedingTickets: String): Option[Double] = {
+//    val optAge: Option[Int] = Try(age.toInt)
+//    val optTickets: Option[Int] = Try(numberOfSpeedingTickets.toInt)
 //    insuaranceRateQuote(optAge, optTickets)
-  }
+//  }
 
   def Try[A](a: => A): Option[A] =
     try Some(a)
     catch {
       case e: Exception => None
     }
+
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    a.flatMap(a => b.flatMap(b => Some(f(a,b))))
 
   def main(args: Array[String]): Unit = {
     def printBlueln(a: Any) =
@@ -83,6 +86,10 @@ object Main {
     printBlueln("variance")
     println(variance(Seq(1.0, 2.0, 3.0)))
     println(variance(Seq()))
+
+    printBlueln("map2")
+    println(map2(Some(5), Some(2.0))((a,b) => (a * b).toString))
+
 
   }
 }
