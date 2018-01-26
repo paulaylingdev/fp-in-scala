@@ -35,6 +35,10 @@ object Main {
   def variance(xs: Seq[Double]): Option[Double] =
     mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
 
+  def lift[A,B](f: A => B): Option[A] => Option[B] = _ map f
+
+  val abs0: Option[Double] => Option[Double] = lift(math.abs)
+
   def main(args: Array[String]): Unit = {
     def printBlueln(a: Any) =
       println(Console.BLUE + a + Console.RESET)
