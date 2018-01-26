@@ -54,7 +54,7 @@ object Main {
     }
 
   def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
-    a.flatMap(a => b.flatMap(b => Some(f(a,b))))
+    a.flatMap(aa => b.map(bb => f(aa,bb)))
 
   def main(args: Array[String]): Unit = {
     def printBlueln(a: Any) =
