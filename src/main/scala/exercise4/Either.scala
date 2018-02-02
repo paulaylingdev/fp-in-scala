@@ -12,7 +12,7 @@ sealed trait Either[+E, +A] {
   }
 
   def orElse[EE >: E, B >: A](b: => Either[EE, B]): Either[EE, B] = this match {
-    case Left(e) => b
+    case Left(_) => b
     case Right(a) => Right(a)
   }
 
@@ -42,8 +42,8 @@ object EitherMain {
 
     printBlueLine("flatMap")
     println(valid.flatMap(a => Right(a * a)))
-    println(valid.flatMap(a => Left("some error!")))
-    println(error.flatMap(a => Left("some error!")))
+    println(valid.flatMap(_ => Left("some error!")))
+    println(error.flatMap(_ => Left("some error!")))
 
     printBlueLine("orElse")
     println(valid.orElse(Left("nope")))
@@ -53,8 +53,8 @@ object EitherMain {
 
     printBlueLine("map2")
     println(valid.map2(Right(6))((a, b) => Right(0.1 * a * b)))
-    println(valid.map2(Left("map2 Error!"))((a, b) => Right(0.1 * a)))
-    println(error.map2(Right(6))((a, b) => Right(0.1 * b)))
+    println(valid.map2(Left("map2 Error!"))((a, _) => Right(0.1 * a)))
+    println(error.map2(Right(6))((_, b) => Right(0.1 * b)))
 
   }
 }
