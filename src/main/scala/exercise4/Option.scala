@@ -66,6 +66,9 @@ object Main {
       case h :: t => h.flatMap(hh => sequence(t).map(hh :: _))
     }
 
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+    sequence(a map f)
+
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
