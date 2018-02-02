@@ -60,6 +60,12 @@ object Main {
   def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
     a.flatMap(aa => b.map(bb => f(aa, bb)))
 
+  def sequence[A](a: List[Option[A]]): Option[List[A]] =
+    a match {
+      case Nil => Some(Nil)
+      case h :: t => h.flatMap(hh => sequence(t).map(hh :: _))
+    }
+
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
@@ -97,5 +103,9 @@ object Main {
     printBlueLine("insurance")
     println(parseInsuranceRateQuote("12", "4"))
     println(parseInsuranceRateQuote("bob", "4"))
+
+    printBlueLine("sequence")
+    println(sequence(List(Some(1),Some(2),Some(3))))
+    println(sequence(List(Some(1),Some(2),None)))
   }
 }
