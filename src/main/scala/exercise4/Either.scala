@@ -6,6 +6,10 @@ sealed trait Either[+E, +A] {
     case Right(a) => Right(f(a))
   }
 
+  def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] = this match {
+    case Left(e) => Left(e)
+    case Right(a) => f(a)
+  }
 }
 
 case class Left[+E](value: E) extends Either[E, Nothing]
@@ -23,6 +27,11 @@ object EitherMain {
     printBlueLine("map")
     println(valid.map(a => a * a))
     println(error.map(a => a))
+
+    printBlueLine("flatMap")
+    println(valid.flatMap(a => Right(a * a)))
+    println(valid.flatMap(a => Left("some error!")))
+    println(error.flatMap(a => Left("some error!")))
 
   }
 }
