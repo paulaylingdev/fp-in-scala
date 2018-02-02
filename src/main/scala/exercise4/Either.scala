@@ -35,6 +35,11 @@ object EitherMain {
     case h :: t => h.flatMap(hh => sequence(t).map(hh :: _))
   }
 
+  def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B]] = as match {
+    case Nil => Right(Nil)
+    case h :: t => f(h).flatMap(hh => traverse(t)(f).map(hh :: _))
+  }
+
 
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
@@ -69,6 +74,10 @@ object EitherMain {
     printBlueLine("sequence")
     println(sequence(validList))
     println(sequence(errorInList))
+
+    printBlueLine("traverse")
+    println(traverse(validList)(a => a))
+    println(traverse(errorInList)(a => a))
 
   }
 }
