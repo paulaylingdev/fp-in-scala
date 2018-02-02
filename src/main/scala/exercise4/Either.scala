@@ -15,6 +15,13 @@ sealed trait Either[+E, +A] {
     case Left(e) => b
     case Right(a) => Right(a)
   }
+
+  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] = for {
+    aa <- this
+    bb <- b
+  } yield f(aa, bb)
+
+
 }
 
 case class Left[+E](value: E) extends Either[E, Nothing]
@@ -43,6 +50,11 @@ object EitherMain {
     println(valid.orElse(Right(6)))
     println(error.orElse(Left("nope")))
     println(error.orElse(Right(21)))
+
+    printBlueLine("map2")
+    println(valid.map2(Right(6))((a, b) => Right(0.1 * a * b)))
+    println(valid.map2(Left("map2 Error!"))((a, b) => Right(0.1 * a)))
+    println(error.map2(Right(6))((a, b) => Right(0.1 * b)))
 
   }
 }
