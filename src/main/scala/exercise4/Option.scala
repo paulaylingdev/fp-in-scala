@@ -69,6 +69,9 @@ object Main {
       case h :: t => map2(f(h), traverse(t)(f))(_ :: _)
     }
 
+  def traverse_1[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+    a.foldRight[Option[List[B]]](Some(Nil))((h, t) => map2(f(h), t)(_ :: _))
+
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
