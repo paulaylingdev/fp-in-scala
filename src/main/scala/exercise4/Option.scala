@@ -61,13 +61,13 @@ object Main {
     a.flatMap(aa => b.map(bb => f(aa, bb)))
 
   def sequence[A](a: List[Option[A]]): Option[List[A]] =
-    a match {
-      case Nil => Some(Nil)
-      case h :: t => h.flatMap(hh => sequence(t).map(hh :: _))
-    }
+    traverse(a)(aa => aa)
 
   def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
-    sequence(a map f)
+    a match {
+      case Nil => Some(Nil)
+      case h :: t => f(h).flatMap(hh => traverse(t)(f).map(hh :: _))
+    }
 
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
@@ -107,8 +107,11 @@ object Main {
     println(parseInsuranceRateQuote("12", "4"))
     println(parseInsuranceRateQuote("bob", "4"))
 
-    printBlueLine("sequence")
-    println(sequence(List(Some(1),Some(2),Some(3))))
-    println(sequence(List(Some(1),Some(2),None)))
+    printBlueLine("sequence / traverse")
+    println(sequence(List(Some(1), Some(2), Some(3))))
+    println(sequence(List(Some(1), Some(2), None)))
+
+    printBlueLine("traverse")
+    println(traverse(List(1, 2, 3))(x => Some(x * x)))
   }
 }
