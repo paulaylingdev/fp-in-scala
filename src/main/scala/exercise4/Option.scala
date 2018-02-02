@@ -26,7 +26,7 @@ case class Some[+A](get: A) extends Option[A]
 
 case object None extends Option[Nothing]
 
-object Main {
+object OptionMain {
 
   def mean(xs: Seq[Double]): Option[Double] =
     if (xs.isEmpty) None
