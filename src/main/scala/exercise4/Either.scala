@@ -29,12 +29,22 @@ case class Left[+E](value: E) extends Either[E, Nothing]
 case class Right[+A](value: A) extends Either[Nothing, A]
 
 object EitherMain {
+
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = es match {
+    case Nil => Right(Nil)
+    case h :: t => h.flatMap(hh => sequence(t).map(hh :: _))
+  }
+
+
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
 
     val valid = Right(5)
     val error = Left("Error")
+
+    val validList = List(Right(5), Right(6), Right(7))
+    val errorInList = List(Right(1), Left("List Error!"), Right(3))
 
     printBlueLine("map")
     println(valid.map(a => a * a))
@@ -55,6 +65,10 @@ object EitherMain {
     println(valid.map2(Right(6))((a, b) => Right(0.1 * a * b)))
     println(valid.map2(Left("map2 Error!"))((a, _) => Right(0.1 * a)))
     println(error.map2(Right(6))((_, b) => Right(0.1 * b)))
+
+    printBlueLine("sequence")
+    println(sequence(validList))
+    println(sequence(errorInList))
 
   }
 }
