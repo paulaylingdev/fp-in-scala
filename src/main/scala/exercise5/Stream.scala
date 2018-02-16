@@ -66,6 +66,9 @@ sealed trait Stream[+A] {
       if (p(a)) cons(a, b)
       else empty
     )
+
+  def headOption2: Option[A] =
+    foldRight(None: Option[A])((a, _) => Some(a))
 }
 
 case object Empty extends Stream[Nothing]
@@ -93,6 +96,7 @@ object Stream {
 
     printBlueLine("headOption")
     println(testStream.headOption)
+    println(Stream().headOption)
 
     printBlueLine("toList")
     println(testStream.toList)
@@ -125,5 +129,9 @@ object Stream {
     println(testStream.takeWhile2(x => x < 3).toList)
     println(testStream.takeWhile2(x => x < 5).toList)
     println(testStream.takeWhile2(_ => false).toList)
+
+    printBlueLine("headOption2")
+    println(testStream.headOption2)
+    println(Stream().headOption2)
   }
 }
