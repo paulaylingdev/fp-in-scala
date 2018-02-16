@@ -7,10 +7,21 @@ sealed trait Stream[+A] {
     case Cons(h, _) => Some(h())
   }
 
-  def toList: List[A] = this match {
-    case Empty => List()
-    case Cons(h, t) => h() :: t().toList
+  //  def toList: List[A] = this match {
+  //    case Empty => List()
+  //    case Cons(h, t) => h() :: t().toList
+  //  }
+
+  def toList: List[A] = {
+    @annotation.tailrec
+    def go(s: Stream[A], acc: List[A]): List[A] = s match {
+      case Cons(h, t) => go(t(), h() :: acc)
+      case _ => acc
+    }
+
+    go(this, List()).reverse
   }
+
 
 }
 
