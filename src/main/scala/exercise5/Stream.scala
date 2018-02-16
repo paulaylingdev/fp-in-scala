@@ -1,5 +1,7 @@
 package main.scala.exercise5
 
+import Stream._
+
 sealed trait Stream[+A] {
 
   def headOption: Option[A] = this match {
@@ -23,18 +25,18 @@ sealed trait Stream[+A] {
   }
 
   def take(n: Int): Stream[A] = this match {
-    case Cons(h, t) if n > 0 => Cons(h, () => t().take(n - 1))
-    case _ => Empty
+    case Cons(h, t) if n > 0 => cons(h(), t().take(n - 1))
+    case _ => empty
   }
 
   def take2(n: Int): Stream[A] = {
     @annotation.tailrec
     def go(s: Stream[A], acc: Stream[A], x: Int): Stream[A] = s match {
-      case Cons(h, t) if x > 0 => go(t(), Cons(h, () => acc), x - 1)
+      case Cons(h, t) if x > 0 => go(t(), cons(h(), acc), x - 1)
       case _ => acc
     }
 
-    go(this, Empty, n) //.reverse
+    go(this, empty, n) //.reverse
   }
 
   def drop(n: Int): Stream[A] = this match {
@@ -43,8 +45,8 @@ sealed trait Stream[+A] {
   }
 
   def takeWhile(p: A => Boolean): Stream[A] = this match {
-    case Cons(h, t) if p(h()) => Cons(h, () => t().takeWhile(p))
-    case _ => Empty
+    case Cons(h, t) if p(h()) => cons(h(), t().takeWhile(p))
+    case _ => empty
   }
 }
 
