@@ -69,6 +69,9 @@ sealed trait Stream[+A] {
 
   def headOption2: Option[A] =
     foldRight(None: Option[A])((a, _) => Some(a))
+
+  def map[B](f: A => B): Stream[B] =
+    foldRight(empty[B])((h, t) => cons(f(h), t))
 }
 
 case object Empty extends Stream[Nothing]
@@ -133,5 +136,9 @@ object Stream {
     printBlueLine("headOption2")
     println(testStream.headOption2)
     println(Stream().headOption2)
+
+    printBlueLine("map")
+    println(testStream.map(i => i * 0.5).toList)
+    println(Stream().map(x => x))
   }
 }
