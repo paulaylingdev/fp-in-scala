@@ -57,6 +57,9 @@ sealed trait Stream[+A] {
       case Cons(h, t) => f(h(), t().foldRight(z)(f))
       case _ => z
     }
+
+  def forAll(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
 }
 
 case object Empty extends Stream[Nothing]
@@ -107,5 +110,9 @@ object Stream {
     printBlueLine("exists")
     println(testStream.exists(x => x == 4))
     println(testStream.exists(x => x == 6))
+
+    printBlueLine("forAll")
+    println(testStream.forAll(x => x > 1))
+    println(testStream.forAll(x => x < 6))
   }
 }
