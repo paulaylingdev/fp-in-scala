@@ -26,4 +26,16 @@ object Stream {
   def apply[A](as: A*): Stream[A] =
     if (as.isEmpty) empty else cons(as.head, apply(as.tail: _*))
 
+  def main(args: Array[String]): Unit = {
+    def printBlueLine(a: Any): Unit =
+      println(Console.BLUE + a + Console.RESET)
+
+    val testStream = Stream(1,2,3,4,5)
+
+    printBlueLine("headOption")
+    println(testStream.headOption)
+
+
+
+  }
 }
