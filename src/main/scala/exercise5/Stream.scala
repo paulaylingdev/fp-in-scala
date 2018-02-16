@@ -60,6 +60,12 @@ sealed trait Stream[+A] {
 
   def forAll(p: A => Boolean): Boolean =
     foldRight(true)((a, b) => p(a) && b)
+
+  def takeWhile2(p: A => Boolean): Stream[A] =
+    foldRight(empty[A])((a, b) =>
+      if (p(a)) cons(a, b)
+      else empty
+    )
 }
 
 case object Empty extends Stream[Nothing]
@@ -114,5 +120,10 @@ object Stream {
     printBlueLine("forAll")
     println(testStream.forAll(x => x > 1))
     println(testStream.forAll(x => x < 6))
+
+    printBlueLine("takeWhile2")
+    println(testStream.takeWhile2(x => x < 3).toList)
+    println(testStream.takeWhile2(x => x < 5).toList)
+    println(testStream.takeWhile2(_ => false).toList)
   }
 }
