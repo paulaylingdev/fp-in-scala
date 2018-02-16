@@ -78,6 +78,9 @@ sealed trait Stream[+A] {
       if (f(h)) cons(h, t)
       else t
     )
+
+  def append[B >: A](b: => B): Stream[B] =
+    foldRight(cons(b, empty[B]))((h, t) => cons(h, t))
 }
 
 case object Empty extends Stream[Nothing]
@@ -150,5 +153,9 @@ object Stream {
     printBlueLine("filter")
     println(testStream.filter(i => (i % 2) == 0).toList)
     println(testStream.filter(i => i > 5))
+
+    printBlueLine("append")
+    println(testStream.append(6).toList)
+    println(Stream().append(1).toList)
   }
 }
