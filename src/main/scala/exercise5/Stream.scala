@@ -7,6 +7,11 @@ sealed trait Stream[+A] {
     case Cons(h, _) => Some(h())
   }
 
+  def toList: List[A] = this match {
+    case Empty => List()
+    case Cons(h, t) => h() :: t().toList
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -30,12 +35,13 @@ object Stream {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
 
-    val testStream = Stream(1,2,3,4,5)
+    val testStream = Stream(1, 2, 3, 4, 5)
 
     printBlueLine("headOption")
     println(testStream.headOption)
 
-
-
+    printBlueLine("toList")
+    println(testStream.toList)
+    println(Stream().toList)
   }
 }
