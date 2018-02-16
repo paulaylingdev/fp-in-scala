@@ -79,8 +79,12 @@ sealed trait Stream[+A] {
       else t
     )
 
-  def append[B >: A](b: => B): Stream[B] =
-    foldRight(cons(b, empty[B]))((h, t) => cons(h, t))
+  def append[B >: A](b: => Stream[B]): Stream[B] =
+    foldRight(b)((h, t) => cons(h, t))
+
+  def flatMap[B](f: A => Stream[B]): Stream[B] =
+    foldRight(empty[B])((h, t) => f(h).append(t))
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -155,7 +159,11 @@ object Stream {
     println(testStream.filter(i => i > 5))
 
     printBlueLine("append")
-    println(testStream.append(6).toList)
-    println(Stream().append(1).toList)
+    println(testStream.append(Stream(6)).toList)
+    println(Stream().append(Stream(1)).toList)
+
+    printBlueLine("flatMap")
+    println(testStream.flatMap(i => if(i == 2) Stream(i) else empty).toList)
+    println(testStream.flatMap(_ => empty).toList)
   }
 }
