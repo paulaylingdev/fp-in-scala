@@ -72,6 +72,12 @@ sealed trait Stream[+A] {
 
   def map[B](f: A => B): Stream[B] =
     foldRight(empty[B])((h, t) => cons(f(h), t))
+
+  def filter(f: A => Boolean): Stream[A] =
+    foldRight(empty[A])((h, t) =>
+      if (f(h)) cons(h, t)
+      else t
+    )
 }
 
 case object Empty extends Stream[Nothing]
@@ -140,5 +146,9 @@ object Stream {
     printBlueLine("map")
     println(testStream.map(i => i * 0.5).toList)
     println(Stream().map(x => x))
+
+    printBlueLine("filter")
+    println(testStream.filter(i => (i % 2) == 0).toList)
+    println(testStream.filter(i => i > 5))
   }
 }
