@@ -22,7 +22,10 @@ sealed trait Stream[+A] {
     go(this, List()).reverse
   }
 
-
+  def take(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 0 => Cons(h, () => t().take(n - 1))
+    case _ => Empty
+  }
 }
 
 case object Empty extends Stream[Nothing]
@@ -54,5 +57,10 @@ object Stream {
     printBlueLine("toList")
     println(testStream.toList)
     println(Stream().toList)
+
+    printBlueLine("take")
+    println(testStream.take(2).toList)
+    println(testStream.take(4).toList)
+    println(testStream.take(6).toList)
   }
 }
