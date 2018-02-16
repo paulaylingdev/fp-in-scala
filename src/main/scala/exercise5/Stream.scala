@@ -36,6 +36,11 @@ sealed trait Stream[+A] {
 
     go(this, Empty, n) //.reverse
   }
+
+  def drop(n: Int): Stream[A] = this match {
+    case Cons(_, t) if n > 0 => t().drop(n - 1)
+    case _ => this
+  }
 }
 
 case object Empty extends Stream[Nothing]
@@ -72,5 +77,11 @@ object Stream {
     println(testStream.take(2).toList)
     println(testStream.take(4).toList)
     println(testStream.take(6).toList)
+    println(Stream().take(1).toList)
+
+    printBlueLine("drop")
+    println(testStream.drop(1).toList)
+    println(testStream.drop(3).toList)
+    println(testStream.drop(6).toList)
   }
 }
