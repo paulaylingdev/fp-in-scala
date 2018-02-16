@@ -48,6 +48,11 @@ sealed trait Stream[+A] {
     case Cons(h, t) if p(h()) => cons(h(), t().takeWhile(p))
     case _ => empty
   }
+
+  def exists(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => p(h()) || t().exists(p)
+    case _ => false
+  }
 }
 
 case object Empty extends Stream[Nothing]
@@ -94,5 +99,9 @@ object Stream {
     printBlueLine("takeWhile")
     println(testStream.takeWhile(x => x < 3).toList)
     println(testStream.takeWhile(x => x < 5).toList)
+
+    printBlueLine("exists")
+    println(testStream.exists(x => x == 4))
+    println(testStream.exists(x => x == 6))
   }
 }
