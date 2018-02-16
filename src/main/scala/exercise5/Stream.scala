@@ -26,6 +26,16 @@ sealed trait Stream[+A] {
     case Cons(h, t) if n > 0 => Cons(h, () => t().take(n - 1))
     case _ => Empty
   }
+
+  def take2(n: Int): Stream[A] = {
+    @annotation.tailrec
+    def go(s: Stream[A], acc: Stream[A], x: Int): Stream[A] = s match {
+      case Cons(h, t) if x > 0 => go(t(), Cons(h, () => acc), x - 1)
+      case _ => acc
+    }
+
+    go(this, Empty, n) //.reverse
+  }
 }
 
 case object Empty extends Stream[Nothing]
