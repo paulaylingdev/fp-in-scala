@@ -98,8 +98,13 @@ sealed trait Stream[+A] {
     case _ => None
   }
 
-  def takeWhile3(p: A => Boolean): Stream[A] = unfold((this, p)) {
-    case (Cons(h, t), f) if f(h()) => Some((h(), (t(), f)))
+  def takeWhile3(p: A => Boolean): Stream[A] = unfold(this) {
+    case (Cons(h, t)) if p(h()) => Some((h(), t()))
+    case _ => None
+  }
+
+  def zipWith[B >: A](xs: Stream[B])(f: (B, B) => B): Stream[B] = unfold((this, xs)) {
+    case (Cons(h, t), Cons(y, ys)) => Some((f(h(), y()), (t(), ys())))
     case _ => None
   }
 
@@ -254,6 +259,9 @@ object Stream {
     printBlueLine("takeWhile3")
     println(testStream.takeWhile3(x => x < 3).toList)
     println(testStream.takeWhile3(x => x < 10).toList)
+
+    printBlueLine("zipWith")
+    println(testStream.zipWith(Stream(5, 4, 3, 2, 1))(_ * _).toList)
 
   }
 }
