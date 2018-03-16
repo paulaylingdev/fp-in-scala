@@ -93,6 +93,11 @@ sealed trait Stream[+A] {
     case Empty => None
   }
 
+  def take3(n: Int): Stream[A] = unfold((this, n)) {
+    case (Cons(h, t), x) if x > 0 => Some((h(), (t(), x - 1)))
+    case _ => None
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -236,6 +241,10 @@ object Stream {
 
     printBlueLine("map2")
     println(testStream.map2(x => s"$x!").toList)
+
+    printBlueLine("take3")
+    println(testStream.take3(3).toList)
+    println(testStream.take3(10).toList)
 
   }
 }
