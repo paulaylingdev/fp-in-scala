@@ -112,8 +112,16 @@ object Stream {
     tail
   }
 
-  def from(n: Int): Stream[Int] = {
-    cons(n, from(n + 1))
+  def from(n: Int): Stream[Int] = cons(n, from(n + 1))
+
+  def fibs(): Stream[Int] = {
+    def createSequence(first: Int, second: Int): Stream[Int] = {
+      val third = first + second
+      val fourth = second + third
+      cons(first, cons(second, createSequence(third, fourth)))
+    }
+
+    createSequence(0, 1)
   }
 
   def main(args: Array[String]): Unit = {
@@ -187,5 +195,8 @@ object Stream {
     printBlueLine("from")
     println(from(5).take(5).toList)
     println(from(345632).take(10).toList)
+
+    printBlueLine("fibs")
+    println(fibs().take(10).toList)
   }
 }
