@@ -129,6 +129,10 @@ object Stream {
     case None => Empty
   }
 
+  def fibs2(): Stream[Int] = unfold((0, 1)) {
+    case (first, second) => Some(first, (second, first + second))
+  }
+
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
@@ -207,5 +211,8 @@ object Stream {
     printBlueLine("unfold")
     println(unfold(true)(_ => Some("Woo", true)).take(5).toList)
     println(unfold(1)(state => Some(state, state + 1)).take(5).toList)
+
+    printBlueLine("fibs2")
+    println(fibs2().take(10).toList)
   }
 }
