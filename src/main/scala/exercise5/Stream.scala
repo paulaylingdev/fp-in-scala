@@ -103,15 +103,15 @@ sealed trait Stream[+A] {
     case _ => None
   }
 
-  def zipWith[B >: A](xs: Stream[B])(f: (B, B) => B): Stream[B] = unfold((this, xs)) {
+  def zipWith[B,C](xs: Stream[B])(f: (A, B) => C): Stream[C] = unfold((this, xs)) {
     case (Cons(h, t), Cons(y, ys)) => Some((f(h(), y()), (t(), ys())))
     case _ => None
   }
 
   def zipAll[B](s2: Stream[B]): Stream[(Option[A], Option[B])] = unfold((this, s2)) {
     case (Cons(h, t), Cons(x, xs)) => Some(((Some(h()), Some(x())), (t(), xs())))
-    case (Cons(h, t), Empty) => Some(((Some(h()), None), (t(), empty[B])))
-    case (Empty, Cons(x, xs)) => Some(((None, Some(x())), (empty[A], xs())))
+    case (Cons(h, t), Empty) => Some(((Some(h()), Option.empty[B]), (t(), empty[B])))
+    case (Empty, Cons(x, xs)) => Some(((Option.empty[A], Some(x())), (empty[A], xs())))
     case _ => None
   }
 
