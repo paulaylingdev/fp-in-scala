@@ -124,6 +124,11 @@ object Stream {
     createSequence(0, 1)
   }
 
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = f(z) match {
+    case Some((value, state)) => cons(value, unfold(state)(f))
+    case None => Empty
+  }
+
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
@@ -198,5 +203,9 @@ object Stream {
 
     printBlueLine("fibs")
     println(fibs().take(10).toList)
+
+    printBlueLine("unfold")
+    println(unfold(true)(_ => Some("Woo", true)).take(5).toList)
+    println(unfold(1)(state => Some(state, state + 1)).take(5).toList)
   }
 }
