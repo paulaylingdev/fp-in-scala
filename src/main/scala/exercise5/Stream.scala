@@ -112,6 +112,10 @@ object Stream {
     tail
   }
 
+  def from(n: Int): Stream[Int] = {
+    cons(n, from(n + 1))
+  }
+
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
@@ -171,7 +175,7 @@ object Stream {
     println(Stream().append(Stream(1)).toList)
 
     printBlueLine("flatMap")
-    println(testStream.flatMap(i => if(i == 2) Stream(i) else empty).toList)
+    println(testStream.flatMap(i => if (i == 2) Stream(i) else empty).toList)
     println(testStream.flatMap(_ => empty).toList)
 
     printBlueLine("find")
@@ -179,5 +183,9 @@ object Stream {
 
     printBlueLine("constant")
     println(constant("blah").take(3).toList)
+
+    printBlueLine("from")
+    println(from(5).take(5).toList)
+    println(from(345632).take(10).toList)
   }
 }
