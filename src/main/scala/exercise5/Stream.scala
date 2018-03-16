@@ -98,6 +98,11 @@ sealed trait Stream[+A] {
     case _ => None
   }
 
+  def takeWhile3(p: A => Boolean): Stream[A] = unfold((this, p)) {
+    case (Cons(h, t), f) if f(h()) => Some((h(), (t(), f)))
+    case _ => None
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -245,6 +250,10 @@ object Stream {
     printBlueLine("take3")
     println(testStream.take3(3).toList)
     println(testStream.take3(10).toList)
+
+    printBlueLine("takeWhile3")
+    println(testStream.takeWhile3(x => x < 3).toList)
+    println(testStream.takeWhile3(x => x < 10).toList)
 
   }
 }
