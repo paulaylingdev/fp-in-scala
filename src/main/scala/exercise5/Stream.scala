@@ -133,6 +133,10 @@ object Stream {
     case (first, second) => Some(first, (second, first + second))
   }
 
+  def from2(n: Int): Stream[Int] = unfold(n)(x => Some(x, x + 1))
+
+  def constant2[A](a: A): Stream[A] = unfold(a)(_ => Some(a, a))
+
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
       println(Console.BLUE + a + Console.RESET)
@@ -214,5 +218,16 @@ object Stream {
 
     printBlueLine("fibs2")
     println(fibs2().take(10).toList)
+
+    printBlueLine("from2")
+    println(from2(5).take(5).toList)
+
+    printBlueLine("constant2")
+    println(constant2("blah").take(3).toList)
+
+    printBlueLine("ones")
+    val ones: Stream[Int] = constant2(1)
+    println(ones.take(5).toList)
+
   }
 }
