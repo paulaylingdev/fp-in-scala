@@ -85,6 +85,9 @@ sealed trait Stream[+A] {
   def flatMap[B](f: A => Stream[B]): Stream[B] =
     foldRight(empty[B])((h, t) => f(h).append(t))
 
+  def find(p: A => Boolean): Option[A] =
+    filter(p).headOption
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -103,6 +106,11 @@ object Stream {
 
   def apply[A](as: A*): Stream[A] =
     if (as.isEmpty) empty else cons(as.head, apply(as.tail: _*))
+
+  def constant[A](a: A): Stream[A] = {
+    lazy val tail: Stream[A] = cons(a, tail)
+    tail
+  }
 
   def main(args: Array[String]): Unit = {
     def printBlueLine(a: Any): Unit =
@@ -165,5 +173,11 @@ object Stream {
     printBlueLine("flatMap")
     println(testStream.flatMap(i => if(i == 2) Stream(i) else empty).toList)
     println(testStream.flatMap(_ => empty).toList)
+
+    printBlueLine("find")
+    println(testStream.find(_ == 3))
+
+    printBlueLine("constant")
+    println(constant("blah").take(3).toList)
   }
 }
