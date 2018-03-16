@@ -88,6 +88,11 @@ sealed trait Stream[+A] {
   def find(p: A => Boolean): Option[A] =
     filter(p).headOption
 
+  def map2[B](f: A => B): Stream[B] = unfold(this) {
+    case Cons(h, t) => Some((f(h()), t()))
+    case Empty => None
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -228,6 +233,9 @@ object Stream {
     printBlueLine("ones")
     val ones: Stream[Int] = constant2(1)
     println(ones.take(5).toList)
+
+    printBlueLine("map2")
+    println(testStream.map2(x => s"$x!").toList)
 
   }
 }
