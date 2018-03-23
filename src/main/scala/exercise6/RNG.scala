@@ -18,6 +18,12 @@ object Main extends App {
     val (result, newRng) = rng.nextInt
     (if (result < 0) -(result + 1) else result, newRng)
   }
+  def double(rng: RNG): (Double, RNG) = {
+   val (result, newRng) = nonNegativeInt(rng)
+    (result.toDouble / Int.MaxValue, newRng)
+  }
 
   println(nonNegativeInt(SimpleRNG(5)))
+
+  println(double(SimpleRNG(100)))
 }
