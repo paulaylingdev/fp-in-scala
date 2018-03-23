@@ -103,7 +103,7 @@ sealed trait Stream[+A] {
     case _ => None
   }
 
-  def zipWith[B,C](xs: Stream[B])(f: (A, B) => C): Stream[C] = unfold((this, xs)) {
+  def zipWith[B, C](xs: Stream[B])(f: (A, B) => C): Stream[C] = unfold((this, xs)) {
     case (Cons(h, t), Cons(y, ys)) => Some((f(h(), y()), (t(), ys())))
     case _ => None
   }
@@ -113,6 +113,12 @@ sealed trait Stream[+A] {
     case (Cons(h, t), Empty) => Some(((Some(h()), Option.empty[B]), (t(), empty[B])))
     case (Empty, Cons(x, xs)) => Some(((Option.empty[A], Some(x())), (empty[A], xs())))
     case _ => None
+  }
+
+  def startsWith[A](s: Stream[A]): Boolean = {
+    this.zipAll(s).takeWhile3(_._2.isDefined) forAll {
+      case (left, right) => left == right
+    }
   }
 
 }
@@ -274,6 +280,9 @@ object Stream {
     val longStream: Stream[Int] = Stream(10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
     println(testStream.zipAll(longStream).toList)
     println(longStream.zipAll(testStream).toList)
+
+    printBlueLine("startsWith")
+    println(testStream startsWith Stream(1, 2))
 
   }
 }
