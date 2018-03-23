@@ -121,6 +121,11 @@ sealed trait Stream[+A] {
     }
   }
 
+  def tails: Stream[Stream[A]] = unfold(this) {
+    case Cons(h, t) => Some(cons(h(),t()), t())
+    case Empty => None
+  }.append(Stream(empty))
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -283,6 +288,9 @@ object Stream {
 
     printBlueLine("startsWith")
     println(testStream startsWith Stream(1, 2))
+
+    printBlueLine("tails")
+    println(testStream.tails.toList.map(_.toList))
 
   }
 }
