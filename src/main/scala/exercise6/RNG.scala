@@ -42,6 +42,17 @@ object Main extends App {
     ((d1, d2, d3), finalRng)
   }
 
+  def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
+    if (count <=0)
+      (List(), rng)
+    else {
+      val (integer, newRng) = rng.nextInt
+      val (xs, newerRng) = ints(count - 1)(newRng)
+      (integer :: xs, newerRng)
+    }
+
+  }
+
 
   println(nonNegativeInt(SimpleRNG(5)))
 
@@ -52,4 +63,6 @@ object Main extends App {
   println(doubleInt(SimpleRNG(5)))
 
   println(double3(SimpleRNG(5)))
+
+  println(ints(5)(SimpleRNG(5))._1)
 }
