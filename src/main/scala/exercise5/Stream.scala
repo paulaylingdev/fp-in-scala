@@ -115,7 +115,7 @@ sealed trait Stream[+A] {
     case _ => None
   }
 
-  def startsWith[A](s: Stream[A]): Boolean = {
+  def startsWith[B >: A](s: Stream[B]): Boolean = {
     this.zipAll(s).takeWhile3(_._2.isDefined) forAll {
       case (left, right) => left == right
     }
@@ -126,6 +126,15 @@ sealed trait Stream[+A] {
     case Empty => None
   }.append(Stream(empty))
 
+  def hasSubsequence[B >: A](s: Stream[B]): Boolean = tails exists (_ startsWith s)
+
+  def scanRight[B](z: B)(f: (A, => B) => B ): Stream[B] = foldRight((z, Stream(z)))(
+    (a, p0) => {
+      lazy val p1 = p0
+      val b2 = f(a, p1._1)
+      (b2, cons(b2, p1._2))
+    }
+  )._2
 }
 
 case object Empty extends Stream[Nothing]
@@ -291,6 +300,9 @@ object Stream {
 
     printBlueLine("tails")
     println(testStream.tails.toList.map(_.toList))
+
+    printBlueLine("scanRight")
+    println(Stream(1,2,3).scanRight(0)(_ + _).toList)
 
   }
 }
