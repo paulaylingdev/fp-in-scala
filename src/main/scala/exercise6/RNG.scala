@@ -40,6 +40,12 @@ object Main extends App {
     g(a)(rng2)
   }
 
+  def _map[A, B](s: Rand[A])(f: A => B): Rand[B] =
+    flatMap(s)(a => unit(f(a)))
+
+  def _map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+    flatMap(ra)(a => flatMap(rb)(b => unit(f(a, b))))
+
   val randIntDouble: Rand[(Int, Double)] = both(int, newDouble)
 
   val randDoubleInt: Rand[(Double, Int)] = both(newDouble, int)
