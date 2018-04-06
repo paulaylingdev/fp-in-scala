@@ -13,6 +13,44 @@ case class SimpleRNG(seed: Long) extends RNG {
   }
 }
 
+case class State[S, +A](run: S => (A, S)) {
+  def map[B](f: A => B): State[S, B] = State {
+    (state: S) => {
+      val (a, s2) = this.run(state)
+      (f(a), s2)
+    }
+  }
+
+  def map2[B, C](sb: State[S, B])(f: (A, B) => C): State[S, C] = State {
+    (state: S) => {
+      val (a, s2) = this.run(state)
+      val (b, s3) = sb.run(s2)
+      (f(a, b), s3)
+    }
+  }
+
+  def flatMap[B](g: A => State[S, B]): State[S, B] = State {
+    (state: S) => {
+      val (a, s2) = this.run(state)
+      g(a).run(s2)
+    }
+  }
+}
+
+object State {
+  def unit[A, S](a: A): State[S, A] = State {
+    (state: S) => (a, state)
+  }
+
+  def sequence[A, S](fs: List[State[S, A]]): State[S, List[A]] =
+    fs.reverse.foldLeft(unit[List[A], S](List.empty[A]))(
+      (list: State[S, List[A]], item: State[S, A]) => {
+        item.map2(list)(_ :: _)
+      }
+    )
+
+}
+
 object Main extends App {
   type Rand[+A] = RNG => (A, RNG)
 
