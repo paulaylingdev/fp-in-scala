@@ -26,6 +26,12 @@ object Main extends App {
     (f(a), rng2)
   }
 
+  def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = rng => {
+    val (a, rng2) = ra(rng)
+    val (b, rng3) = rb(rng2)
+    (f(a, b), rng3)
+  }
+
   def newDouble(): Rand[Double] = map(nonNegativeInt)(_.toDouble / Int.MaxValue)
 
   def nonNegativeInt(rng: RNG): (Int, RNG) = {
@@ -57,7 +63,7 @@ object Main extends App {
   }
 
   def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
-    if (count <=0)
+    if (count <= 0)
       (List(), rng)
     else {
       val (integer, newRng) = rng.nextInt
