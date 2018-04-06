@@ -35,22 +35,35 @@ object Main extends App {
   def both[A, B](ra: Rand[A], rb: Rand[B]): Rand[(A, B)] =
     map2(ra, rb)((_, _))
 
+  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = rng => {
+    val (a, rng2) = f(rng)
+    g(a)(rng2)
+  }
+
   val randIntDouble: Rand[(Int, Double)] = both(int, newDouble)
 
   val randDoubleInt: Rand[(Double, Int)] = both(newDouble, int)
 
-  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = {
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] =
     fs.reverse.foldLeft(unit(List.empty[A]))(
       (list: Rand[List[A]], item: Rand[A]) => {
         map2(item, list)(_ :: _)
       }
     )
-  }
 
   def seqInts(count: Int): Rand[List[Int]] =
     sequence(List.fill(count)(int))
 
   def newDouble: Rand[Double] = map(nonNegativeInt)(_.toDouble / Int.MaxValue)
+
+  def nonNegativeLessThan(n: Int): Rand[Int] =
+    flatMap(int)(i => {
+      val mod = i % n
+      if (i + (n - 1) - mod >= 0)
+        unit(mod)
+      else
+        nonNegativeLessThan(n)
+    })
 
   def nonNegativeInt(rng: RNG): (Int, RNG) = {
     val (result, newRng) = rng.nextInt
@@ -112,4 +125,6 @@ object Main extends App {
   println(sequence(List(unit(1), unit(2), unit(3)))(SimpleRNG(1)))
 
   println(seqInts(10)(SimpleRNG(1)))
+
+  println(nonNegativeLessThan(5)(SimpleRNG(2)))
 }
