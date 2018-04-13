@@ -30,12 +30,41 @@ object Par {
     (es: ExecutorService) => {
       val af = a(es)
       val bf = b(es)
-      UnitFuture(f(af.get, bf.get))
+      Map2Future(af, bf, f)
     }
 
   def fork[A](a: => Par[A]): Par[A] =
     es => es.submit(new Callable[A] {
       def call: A = a(es).get
     })
+
+  case class Map2Future[A, B, C](a: Future[A], b: Future[B], f: (A, B) => C) extends Future[C] {
+    @volatile var cache: Option[C] = None
+
+    def isDone: Boolean = cache.isDefined
+
+    def isCancelled: Boolean = a.isCancelled || b.isCancelled
+
+    def cancel(evenIfRunning: Boolean): Boolean =
+      a.cancel(evenIfRunning) || b.cancel(evenIfRunning)
+
+    def get: C = compute(Long.MaxValue)
+
+    def get(timeout: Long, units: TimeUnit): C =
+      compute(TimeUnit.NANOSECONDS.convert(timeout, units))
+
+    private def compute(timeoutInNanos: Long): C = cache match {
+      case Some(c) => c
+      case None =>
+        val start = System.nanoTime
+        val ar = a.get(timeoutInNanos, TimeUnit.NANOSECONDS)
+        val stop = System.nanoTime
+        val aTime = stop - start
+        val br = b.get(timeoutInNanos - aTime, TimeUnit.NANOSECONDS)
+        val ret = f(ar, br)
+        cache = Some(ret)
+        ret
+    }
+  }
 
 }
