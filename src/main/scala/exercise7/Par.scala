@@ -38,6 +38,8 @@ object Par {
       def call: A = a(es).get
     })
 
+  def lazyUnit[A](a: => A): Par[A] = fork(unit(a))
+
   case class Map2Future[A, B, C](a: Future[A], b: Future[B], f: (A, B) => C) extends Future[C] {
     @volatile var cache: Option[C] = None
 
@@ -66,5 +68,8 @@ object Par {
         ret
     }
   }
+
+  def asyncF[A, B](f: A => B): A => Par[B] =
+    (a: A) => lazyUnit(f(a))
 
 }
