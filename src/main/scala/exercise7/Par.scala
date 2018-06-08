@@ -1,5 +1,4 @@
-package main.scala.exercise7
-
+package exercise7
 import java.util.concurrent.{Callable, ExecutorService, Future, TimeUnit}
 
 /*
@@ -14,7 +13,7 @@ trait Par[A] {
 object Par {
   type Par[A] = ExecutorService => Future[A]
 
-  def unit[A](a: A): Par[A] = (es: ExecutorService) => UnitFuture(a)
+  def unit[A](a: A): Par[A] = (_: ExecutorService) => UnitFuture(a)
 
   private case class UnitFuture[A](get: A) extends Future[A] {
     def isDone = true
@@ -95,6 +94,15 @@ object Par {
         )
       )
     map(sequence(pars))(_.flatten)
+  }
+
+  def sum[A](as: IndexedSeq[A], default: A)(f: (A, A) => A): Par[A] = {
+    if (as.length <= 1)
+      unit(as.headOption getOrElse default)
+    else {
+      val (l, r) = as.splitAt(as.length / 2)
+      map2(fork(sum(l, default)(f)), fork(sum(r, default)(f)))(f)
+    }
   }
 
 }
