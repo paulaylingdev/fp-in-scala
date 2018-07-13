@@ -13,4 +13,8 @@ class ParTest extends FlatSpec with Matchers {
     result.get shouldBe 52
   }
 
+  "countParagraphs" should "take a list of paragraphs and return the total number of words" in {
+    val result = Par.countParagraphs(List("Easy as one two three","a b c"))(executor)
+    result.get shouldBe 8
+  }
 }

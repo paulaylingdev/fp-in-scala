@@ -1,6 +1,8 @@
 package exercise7
 import java.util.concurrent.{Callable, ExecutorService, Future, TimeUnit}
 
+import scala.collection.immutable
+
 /*
 Exercise 7.1
 map2 signature
@@ -105,4 +107,11 @@ object Par {
     }
   }
 
+  def countParagraphs(paragraphs: List[String]): Par[Int] = {
+    val pars: immutable.IndexedSeq[Par[Int]] = paragraphs.toIndexedSeq.map(asyncF(
+      s => s.split(" ").length
+    ))
+    //sum[Par[Int]](pars, unit(0))((a, b) =>)
+    unit(0)
+  }
 }
