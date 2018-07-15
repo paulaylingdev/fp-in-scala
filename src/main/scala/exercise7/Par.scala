@@ -108,10 +108,8 @@ object Par {
   }
 
   def countParagraphs(paragraphs: List[String]): Par[Int] = {
-    val pars: immutable.IndexedSeq[Par[Int]] = paragraphs.toIndexedSeq.map(asyncF(
-      s => s.split(" ").length
-    ))
-    //sum[Par[Int]](pars, unit(0))((a, b) =>)
-    unit(0)
+    val pars: Par[List[Int]] = parMap(paragraphs)(s => s.split(" ").length)
+    map(pars)(_.sum)
+//    map[List[Int], Par[Int]](pars)(a => sum(a.toIndexedSeq, 0)(_ + _))
   }
 }
