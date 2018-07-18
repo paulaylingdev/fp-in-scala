@@ -17,4 +17,17 @@ class ParTest extends FlatSpec with Matchers {
     val result = Par.countParagraphs(List("Easy as one two three","a b c"))(executor)
     result.get shouldBe 8
   }
+
+  "choiceN" should "take a choice integer of N and run one of the choices provided" in {
+    val result = Par.choiceN(Par.unit(1))(List(Par.unit("a"), Par.unit("b"), Par.unit("c")))(executor)
+    result.get shouldBe "b"
+  }
+
+  "choice" should "take a boolean condition and execute one parallel or another" in {
+    val result = Par.choice(Par.unit(true))(Par.unit("trueValue"), Par.unit("falseValue"))(executor)
+    result.get shouldBe "trueValue"
+
+    val result2 = Par.choice(Par.unit(false))(Par.unit("trueValue"), Par.unit("falseValue"))(executor)
+    result2.get shouldBe "falseValue"
+  }
 }

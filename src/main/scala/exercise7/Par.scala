@@ -39,6 +39,10 @@ object Par {
       def call: A = a(es).get
     })
 
+  def run[A](s: ExecutorService)(a: Par[A]): Future[A] = {
+     a(s)
+  }
+
   def lazyUnit[A](a: => A): Par[A] = fork(unit(a))
 
   case class Map2Future[A, B, C](a: Future[A], b: Future[B], f: (A, B) => C) extends Future[C] {
@@ -111,5 +115,16 @@ object Par {
     val pars: Par[List[Int]] = parMap(paragraphs)(s => s.split(" ").length)
     map(pars)(_.sum)
 //    map[List[Int], Par[Int]](pars)(a => sum(a.toIndexedSeq, 0)(_ + _))
+  }
+
+  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = {
+    es => {
+      val choice: Int = run(es)(n).get
+      choices(choice)(es)
+    }
+  }
+
+  def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] = {
+    choiceN(map[Boolean, Int](cond)(bool => if (bool) 0 else 1))(List(t, f))
   }
 }
