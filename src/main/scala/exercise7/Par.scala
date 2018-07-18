@@ -112,9 +112,11 @@ object Par {
   }
 
   def countParagraphs(paragraphs: List[String]): Par[Int] = {
-    val pars: Par[List[Int]] = parMap(paragraphs)(s => s.split(" ").length)
-    map(pars)(_.sum)
-//    map[List[Int], Par[Int]](pars)(a => sum(a.toIndexedSeq, 0)(_ + _))
+    es => {
+      val pars: Par[List[Int]] = parMap(paragraphs)(s => s.split(" ").length)
+      val is: List[Int] = run(es)(pars).get()
+      run(es)(sum(is.toIndexedSeq, 0)(_ + _))
+    }
   }
 
   def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = {
