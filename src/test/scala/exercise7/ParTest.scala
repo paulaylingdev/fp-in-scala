@@ -30,4 +30,9 @@ class ParTest extends FlatSpec with Matchers {
     val result2 = Par.choice(Par.unit(false))(Par.unit("trueValue"), Par.unit("falseValue"))(executor)
     result2.get shouldBe "falseValue"
   }
+
+  "choiceMap" should "take a key and map it to a choice" in {
+    val result = Par.choiceMap(Par.unit("123"))(Map("123" -> Par.unit(123)))(executor)
+    result.get shouldBe 123
+  }
 }
