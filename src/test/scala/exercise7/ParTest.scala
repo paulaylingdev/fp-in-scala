@@ -35,4 +35,19 @@ class ParTest extends FlatSpec with Matchers {
     val result = Par.choiceMap(Par.unit("123"))(Map("123" -> Par.unit(123)))(executor)
     result.get shouldBe 123
   }
+
+  "chooser" should "take a value and a function that maps the value to a result" in {
+    val result = Par.chooser(Par.unit("123"))((s: String) => Par.unit(s.toInt))(executor)
+    result.get shouldBe 123
+  }
+
+  "chooserChoiceN" should "take a choice integer of N and run one of the choices provided" in {
+    val result = Par.chooserChoiceN(Par.unit(1))(List(Par.unit("a"), Par.unit("b"), Par.unit("c")))(executor)
+    result.get shouldBe "b"
+  }
+
+  "chooserChoice" should "take a boolean condition and execute one parallel or another" in {
+    val result = Par.chooserChoice(Par.unit(true))(Par.unit("trueValue"), Par.unit("falseValue"))(executor)
+    result.get shouldBe "trueValue"
+  }
 }
