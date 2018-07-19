@@ -147,4 +147,16 @@ object Par {
   def chooserChoice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] = {
     chooser(cond)(if (_) t else f)
   }
+
+  def join[A](a: Par[Par[A]]): Par[A] = {
+    es => a(es).get()(es)
+  }
+
+  def flatMap[A,B](a: Par[A])(f: A => Par[B]): Par[B] = {
+    join(map(a)(f(_)))
+  }
+
+//  def joinFlatMap[A](a: Par[Par[A]]): Par[A] = {
+//    flatMap(a)(_)
+//  }
 }

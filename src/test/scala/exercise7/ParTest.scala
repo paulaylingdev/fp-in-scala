@@ -9,12 +9,12 @@ class ParTest extends FlatSpec with Matchers {
   val executor: ExecutorService = Executors.newFixedThreadPool(20)
 
   "sum" should "correctly sum up a list of integers" in {
-    val result: Future[Int] = Par.sum(IndexedSeq(5,4,2,8,10,23), default = 0)(_ + _)(executor)
+    val result: Future[Int] = Par.sum(IndexedSeq(5, 4, 2, 8, 10, 23), default = 0)(_ + _)(executor)
     result.get shouldBe 52
   }
 
   "countParagraphs" should "take a list of paragraphs and return the total number of words" in {
-    val result = Par.countParagraphs(List("Easy as one two three","a b c"))(executor)
+    val result = Par.countParagraphs(List("Easy as one two three", "a b c"))(executor)
     result.get shouldBe 8
   }
 
@@ -49,5 +49,15 @@ class ParTest extends FlatSpec with Matchers {
   "chooserChoice" should "take a boolean condition and execute one parallel or another" in {
     val result = Par.chooserChoice(Par.unit(true))(Par.unit("trueValue"), Par.unit("falseValue"))(executor)
     result.get shouldBe "trueValue"
+  }
+
+  "join" should "execute a parallel computation within another" in {
+    val result = Par.join(Par.unit(Par.unit(3)))(executor)
+    result.get shouldBe 3
+  }
+
+  "flatMap" should "compute the initial value and use the reuslt in another calculation" in {
+    val result = Par.flatMap(Par.unit("abc"))((s: String) => Par.unit(s.charAt(2)))(executor)
+    result.get shouldBe 'c'
   }
 }
