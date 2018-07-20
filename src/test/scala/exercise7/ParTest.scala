@@ -60,4 +60,9 @@ class ParTest extends FlatSpec with Matchers {
     val result = Par.flatMap(Par.unit("abc"))((s: String) => Par.unit(s.charAt(2)))(executor)
     result.get shouldBe 'c'
   }
+
+  "joinFlatMap" should "be exactly the same as join but implemented using flatMap" in {
+    val result = Par.joinFlatMap(Par.unit(Par.unit(3)))(executor)
+    result.get shouldBe 3
+  }
 }

@@ -156,7 +156,7 @@ object Par {
     join(map(a)(f(_)))
   }
 
-//  def joinFlatMap[A](a: Par[Par[A]]): Par[A] = {
-//    flatMap(a)(_)
-//  }
+  def joinFlatMap[A](a: Par[Par[A]]): Par[A] = {
+    flatMap(a)((input: Par[A]) => input)
+  }
 }
