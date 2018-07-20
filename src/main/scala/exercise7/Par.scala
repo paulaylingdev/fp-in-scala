@@ -1,4 +1,5 @@
 package exercise7
+
 import java.util.concurrent.{Callable, ExecutorService, Future, TimeUnit}
 
 import scala.collection.immutable
@@ -40,7 +41,7 @@ object Par {
     })
 
   def run[A](s: ExecutorService)(a: Par[A]): Future[A] = {
-     a(s)
+    a(s)
   }
 
   def lazyUnit[A](a: => A): Par[A] = fork(unit(a))
@@ -130,13 +131,13 @@ object Par {
     choiceN(map[Boolean, Int](cond)(bool => if (bool) 0 else 1))(List(t, f))
   }
 
-  def choiceMap[K,V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] = {
+  def choiceMap[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] = {
     es => {
       choices(key(es).get)(es)
     }
   }
 
-  def chooser[A,B](pa: Par[A])(choices: A => Par[B]): Par[B] = {
+  def chooser[A, B](pa: Par[A])(choices: A => Par[B]): Par[B] = {
     es => choices(pa(es).get)(es)
   }
 
@@ -152,11 +153,17 @@ object Par {
     es => a(es).get()(es)
   }
 
-  def flatMap[A,B](a: Par[A])(f: A => Par[B]): Par[B] = {
+  def flatMap[A, B](a: Par[A])(f: A => Par[B]): Par[B] = {
     join(map(a)(f(_)))
   }
 
   def joinFlatMap[A](a: Par[Par[A]]): Par[A] = {
     flatMap(a)((input: Par[A]) => input)
+  }
+
+  def map2FlatMap[A, B, C](a: Par[A], b: Par[B])(f: (A, B) => C): Par[C] = {
+    flatMap(a)((aa: A) =>
+      flatMap(b)((bb: B) => unit(f(aa, bb)))
+    )
   }
 }
