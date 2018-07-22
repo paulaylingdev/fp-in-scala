@@ -6,7 +6,7 @@ import org.scalacheck.Prop.forAll
 import org.scalatest.prop.Checkers._
 import org.scalatest.{FlatSpec, Matchers}
 
-class PropTest extends FlatSpec with Matchers {
+class ScalaCheckTest extends FlatSpec with Matchers {
 
     "sum" should "sum up a list of integers" in {
       val intList = listOf(choose(0, 100))
