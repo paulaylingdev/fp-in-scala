@@ -11,15 +11,18 @@ class PropTest extends FlatSpec with Matchers {
 
   "Gen.choose" should "generate integers in range start to stopExclusive" in {
     val gen = Gen.choose(0, 5)
-    val result = gen.sample.run(simpleRNG)._1
+    val result = generate(gen)
     result should be < 5
     result should be >= 0
   }
 
   "Gen.unit" should "create a Gen object of a given value" in {
     val gen = Gen.unit("abc")
-    val result = gen.sample.run(simpleRNG)._1
+    val result = generate(gen)
     result shouldBe "abc"
   }
 
+  private def generate[A](gen: Gen[A]): A = {
+    gen.sample.run(simpleRNG)._1
+  }
 }
