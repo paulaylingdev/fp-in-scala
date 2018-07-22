@@ -1,6 +1,6 @@
 package exercise8
 
-import main.scala.exercise6.{Main, RNG, SimpleRNG, State}
+import main.scala.exercise6.{Main, RNG, State}
 
 trait Prop {
   def check: Boolean
@@ -19,9 +19,7 @@ case class Gen[A](sample: State[RNG, A])
 
 object Gen {
   def choose(start: Int, stopExclusive: Int): Gen[Int] = {
-    Gen(State(Main.nonNegativeInt).map {
-      generatedInt: Int => generatedInt + start % (stopExclusive - start)
-    })
+    Gen(State(Main.nonNegativeInt).map(generatedInt => start + generatedInt % (stopExclusive - start)))
   }
 
   def unit[A](a: => A): Gen[A] = {
