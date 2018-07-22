@@ -2,7 +2,6 @@ package excercise8
 
 import exercise8.Gen
 import main.scala.exercise6.SimpleRNG
-import main.scala.exercise6.State
 import org.scalatest.{FlatSpec, Matchers}
 
 class PropTest extends FlatSpec with Matchers {
@@ -18,8 +17,19 @@ class PropTest extends FlatSpec with Matchers {
 
   "Gen.unit" should "create a Gen object of a given value" in {
     val gen = Gen.unit("abc")
+    generate(gen) shouldBe "abc"
+  }
+
+  "Gen.boolean" should "generate a boolean" in {
+    val gen = Gen.boolean
+    generate(gen) shouldBe false //This specific seed generates false
+  }
+
+  "Gen.listOfN" should "generate a list of integers of size n" in {
+    val gen = Gen.listOfN(5, Gen.choose(0, 5))
     val result = generate(gen)
-    result shouldBe "abc"
+    result shouldBe a [List[Int]]
+    result should have size 5
   }
 
   private def generate[A](gen: Gen[A]): A = {
