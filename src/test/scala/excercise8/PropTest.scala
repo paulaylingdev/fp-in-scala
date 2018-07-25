@@ -52,6 +52,15 @@ class PropTest extends FlatSpec with Matchers {
     result.size should be < 15
   }
 
+  "Gen.union" should "combine two generators of the same type into one by pulling values from each generator" in {
+    val gen1 = Gen.choose(0, 100)
+    val gen2 = Gen.choose(250,500)
+    val unionGen = Gen.union(gen1, gen2)
+    val result = generate(unionGen)
+    result should be >= 0
+    result should be < 500
+  }
+
   private def generate[A](gen: Gen[A]): A = {
     gen.sample.run(simpleRNG)._1
   }
