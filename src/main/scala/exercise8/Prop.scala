@@ -43,11 +43,9 @@ object Gen {
   }
 
   def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] = {
-    g1.flatMap(a1 => g2.flatMap(a2 => {
-      Gen.boolean.flatMap(chooser => {
-        if (chooser) Gen.unit(a1) else Gen.unit(a2)
-      })
-    }))
+    Gen.boolean.flatMap(chooser => {
+      if (chooser) g1 else g2
+    })
   }
 
 
