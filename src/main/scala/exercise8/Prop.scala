@@ -15,7 +15,17 @@ object Prop {
   type SuccessCount = Int
 }
 
-case class Gen[A](sample: State[RNG, A])
+case class Gen[A](sample: State[RNG, A]) {
+  def flatMap[B](f: A => Gen[B]): Gen[B] = {
+    Gen(sample.flatMap(input => f(input).sample))
+  }
+
+  def listOfN(size: Gen[Int]): Gen[List[A]] = {
+    size.flatMap(n => {
+      Gen(State.sequence(List.fill(n)(this.sample)))
+    })
+  }
+}
 
 object Gen {
   def choose(start: Int, stopExclusive: Int): Gen[Int] = {
