@@ -48,5 +48,14 @@ object Gen {
     })
   }
 
-
+  def weighted[A](g1: (Gen[A], Double), g2: (Gen[A], Double)): Gen[A] = {
+    val max = (g1._2 + g2._2) * 100
+    Gen.choose(0, max.toInt + 1).flatMap(value => {
+      val percent = value.toDouble / 100
+      if (percent <= g1._2)
+        g1._1
+      else
+        g2._1
+    })
+  }
 }

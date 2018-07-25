@@ -61,6 +61,15 @@ class PropTest extends FlatSpec with Matchers {
     result should be < 500
   }
 
+  "Gen.weighted" should "combine two generators of the same type into one by pulling values from each based on a weight" in {
+    val gen1 = Gen.choose(0, 100)
+    val gen2 = Gen.choose(250,500)
+    val unionGen = Gen.weighted((gen1, 0.2), (gen2, 0.8))
+    val result = generate(unionGen)
+    result should be >= 250
+    result should be < 500
+  }
+
   private def generate[A](gen: Gen[A]): A = {
     gen.sample.run(simpleRNG)._1
   }
