@@ -1,4 +1,4 @@
-package main.scala.exercise5
+package exercise5
 
 import Stream._
 

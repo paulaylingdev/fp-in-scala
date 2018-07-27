@@ -1,7 +1,8 @@
 package excercise8
 
-import exercise8.Gen
-import main.scala.exercise6.SimpleRNG
+import exercise8.Prop.TestCases
+import exercise8.{Falsified, Gen, Passed, Prop}
+import main.scala.exercise6.{RNG, SimpleRNG}
 import org.scalatest.{FlatSpec, Matchers}
 
 class PropTest extends FlatSpec with Matchers {
@@ -68,6 +69,22 @@ class PropTest extends FlatSpec with Matchers {
     val result = generate(unionGen)
     result should be >= 250
     result should be < 500
+  }
+
+  "Prop.&&" should "combine two Prop objects into one using logical AND" in {
+    val prop1 = Prop((testCases: TestCases, rng: RNG) => Passed)
+    val prop2 = Prop((testCases: TestCases, rng: RNG) => Falsified("something went wrong!", 0))
+
+    val combined = prop1 && prop2
+    combined.run(1, simpleRNG) shouldBe Falsified("something went wrong!", 0)
+  }
+
+  "Prop.||" should "combine two Prop objects into one using logical OR" in {
+    val prop1 = Prop((testCases: TestCases, rng: RNG) => Passed)
+    val prop2 = Prop((testCases: TestCases, rng: RNG) => Falsified("something went wrong!", 0))
+
+    val combined = prop1 || prop2
+    combined.run(1, simpleRNG) shouldBe Passed
   }
 
   private def generate[A](gen: Gen[A]): A = {
