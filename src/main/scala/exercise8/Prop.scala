@@ -18,24 +18,27 @@ case class Falsified(failure: FailedCase, successes: SuccessCount) extends Resul
 
 case class Prop(run: (TestCases, RNG) => Result) {
   def &&(p: Prop): Prop = {
-    Prop((testcases, rng) => {
-      val result1 = run(testcases, rng)
-      val result2 = p.run(testcases, rng)
-      if (result1.isFalsified || result2.isFalsified)
-        Falsified("Something failed", 0)
-      else
-        Passed
+    Prop((testCases, rng) => {
+      run(testCases, rng) match {
+        case Passed => p.run(testCases, rng)
+        case anythingElse => anythingElse
+      }
     })
   }
   def ||(p: Prop): Prop = {
-    Prop((testcases, rng) => {
-      val result1 = run(testcases, rng)
-      val result2 = p.run(testcases, rng)
-      if (result1.isFalsified && result2.isFalsified)
-        Falsified("Something failed", 0)
-      else
-        Passed
+    Prop((testCases, rng) => {
+      run(testCases, rng) match {
+        case Falsified(msg, _) => p.tag(msg).run(testCases, rng)
+        case anythingElse => anythingElse
+      }
     })
+  }
+
+  def tag(msg: String): Prop = Prop {
+    (testCases, rng) => run(testCases, rng) match {
+      case Falsified(e, c) => Falsified(s"$msg \n $e", c)
+      case anythingElse => anythingElse
+    }
   }
 }
 
