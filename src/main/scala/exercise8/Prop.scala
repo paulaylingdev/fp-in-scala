@@ -73,6 +73,8 @@ case class Gen[A](sample: State[RNG, A]) {
       Gen(State.sequence(List.fill(n)(this.sample)))
     })
   }
+
+  def unsized: SGen[A] = SGen(_ => this)
 }
 
 object Gen {
@@ -107,3 +109,5 @@ object Gen {
     })
   }
 }
+
+case class SGen[A](forSize: Int => Gen[A])

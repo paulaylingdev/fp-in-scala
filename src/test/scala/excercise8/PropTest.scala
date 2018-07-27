@@ -1,7 +1,7 @@
 package excercise8
 
 import exercise8.Prop.TestCases
-import exercise8.{Falsified, Gen, Passed, Prop}
+import exercise8._
 import main.scala.exercise6.{RNG, SimpleRNG}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -92,6 +92,14 @@ class PropTest extends FlatSpec with Matchers {
     val prop1 = Prop((_, _) => Falsified("Error", 0))
 
     prop1.tag(prefix).run(1, simpleRNG) shouldBe Falsified(s"$prefix \n Error", 0)
+  }
+
+  "Gen.unsized" should "convert a Gen to SGen" in {
+    val gen = Gen.boolean
+    val sgen = gen.unsized
+    sgen shouldBe a [SGen[Boolean]]
+    sgen.forSize(123) shouldBe gen
+    sgen.forSize(12345) shouldBe gen
   }
 
   private def generate[A](gen: Gen[A]): A = {
