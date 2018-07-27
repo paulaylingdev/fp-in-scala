@@ -25,6 +25,7 @@ case class Prop(run: (TestCases, RNG) => Result) {
       }
     })
   }
+
   def ||(p: Prop): Prop = {
     Prop((testCases, rng) => {
       run(testCases, rng) match {
@@ -35,10 +36,11 @@ case class Prop(run: (TestCases, RNG) => Result) {
   }
 
   def tag(msg: String): Prop = Prop {
-    (testCases, rng) => run(testCases, rng) match {
-      case Falsified(e, c) => Falsified(s"$msg \n $e", c)
-      case anythingElse => anythingElse
-    }
+    (testCases, rng) =>
+      run(testCases, rng) match {
+        case Falsified(e, c) => Falsified(s"$msg \n $e", c)
+        case anythingElse => anythingElse
+      }
   }
 }
 
@@ -48,24 +50,31 @@ object Prop {
   type TestCases = Int
 
   def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
-    (n, rng) => randomStream(as)(rng).zipAll(Stream.from(0)).take(n).map {
-      case (a, i) => try {
-        if (f(a.get)) Passed else Falsified(a.toString, i.get)
-      } catch { case e: Exception => Falsified(buildMsg(a, e), i.get)}
-    }.find(_.isFalsified).getOrElse(Passed)
+    (n, rng) =>
+      randomStream(as)(rng).zipAll(Stream.from(0)).take(n).map {
+        case (a, i) => try {
+          if (f(a.get)) Passed else Falsified(a.toString, i.get)
+        } catch {
+          case e: Exception => Falsified(buildMsg(a, e), i.get)
+        }
+      }.find(_.isFalsified).getOrElse(Passed)
   }
 
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] = Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
 
   def buildMsg[A](s: A, e: Exception): String =
     s"test case: $s\n" +
-    s"generated an exception: ${e.getMessage}\n" +
-    s"stack trace: \n ${e.getStackTrace.mkString("\n")}"
+      s"generated an exception: ${e.getMessage}\n" +
+      s"stack trace: \n ${e.getStackTrace.mkString("\n")}"
 }
 
 case class Gen[A](sample: State[RNG, A]) {
   def flatMap[B](f: A => Gen[B]): Gen[B] = {
     Gen(sample.flatMap(input => f(input).sample))
+  }
+
+  def map[B](f: A => B): Gen[B] = {
+    flatMap(input => Gen.unit(f(input)))
   }
 
   def listOfN(size: Gen[Int]): Gen[List[A]] = {
@@ -75,6 +84,8 @@ case class Gen[A](sample: State[RNG, A]) {
   }
 
   def unsized: SGen[A] = SGen(_ => this)
+
+  def **[B](g2: Gen[B]): Gen[(A, B)] = ???
 }
 
 object Gen {
@@ -110,4 +121,22 @@ object Gen {
   }
 }
 
-case class SGen[A](forSize: Int => Gen[A])
+case class SGen[A](forSize: Int => Gen[A]) {
+  def apply(n: Int): Gen[A] = forSize(n)
+
+  def map[B](f: A => B): SGen[B] = SGen {
+    forSize(_) map f
+  }
+
+  def flatMap[B](f: A => SGen[B]): SGen[B] = {
+    val forSize2: Int => Gen[B] = n => {
+      forSize(n) flatMap {
+        f(_).forSize(n)
+      }
+    }
+    SGen(forSize2)
+  }
+
+  def **[B](s2: SGen[B]): SGen[(A, B)] = SGen(n => apply(n) ** s2(n))
+
+}
