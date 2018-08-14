@@ -129,6 +129,20 @@ class PropTest extends FlatSpec with Matchers {
     generate(sgen(2)) should have size 2
   }
 
+  "List.sorted" should "sort a list of integers correctly" in {
+    val smallInt = Gen.choose(-10, 10)
+    val sortedProp = Prop.forAll(Gen.listOf(smallInt)) { input =>
+        def isSorted[T](s: Seq[T])(implicit ord: Ordering[T]): Boolean = s match {
+          case Seq() => true
+          case Seq(_) => true
+          case _ => s.sliding(2).forall{ case List(x, y) => ord.lteq(x, y)}
+        }
+        val sortedList = input.sorted
+        isSorted(sortedList)
+    }
+    sortedProp.run(100, 100, simpleRNG) shouldBe Passed
+  }
+
   private def generate[A](gen: Gen[A]): A = {
     gen.sample.run(simpleRNG)._1
   }
