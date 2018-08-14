@@ -143,6 +143,11 @@ class PropTest extends FlatSpec with Matchers {
     sortedProp.run(100, 100, simpleRNG) shouldBe Passed
   }
 
+  "Prop.check" should "prove or falsify a simple test" in {
+    Prop.check(4 == 5).run(100, 100, simpleRNG) shouldBe Falsified("()", 0)
+    Prop.check(5 == 5).run(100, 100, simpleRNG) shouldBe Proved
+  }
+
   private def generate[A](gen: Gen[A]): A = {
     gen.sample.run(simpleRNG)._1
   }

@@ -68,7 +68,7 @@ object Prop {
     }
 
   def check(p: => Boolean): Prop = Prop { (_, _, _) =>
-    if (p) Passed else Falsified("()", 0)
+    if (p) Proved else Falsified("()", 0)
   }
 
   def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
@@ -165,10 +165,7 @@ object Gen {
 
   def listOf1[A](g: Gen[A]): SGen[List[A]] = {
     SGen(size => {
-      if (size <= 0)
-        g.listOfN(Gen.unit(1))
-      else
-        g.listOfN(Gen.unit(size))
+        g.listOfN(Gen.unit(size max 1))
     })
   }
 }
