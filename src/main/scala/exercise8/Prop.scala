@@ -16,6 +16,10 @@ case class Falsified(failure: FailedCase, successes: SuccessCount) extends Resul
   override def isFalsified: Boolean = true
 }
 
+case object Proved extends Result {
+  override def isFalsified: Boolean = false
+}
+
 case class Prop(run: (MaxSize, TestCases, RNG) => Result) {
   def &&(p: Prop): Prop = {
     Prop((max, testCases, rng) => {
@@ -59,7 +63,13 @@ object Prop {
         println(s"! Falsified after $successes passed tests:\n $failure")
       case Passed =>
         println(s"+ OK, passed $testCases tests.")
+      case Proved =>
+        println(s"+ OK, proved property.")
     }
+
+  def check(p: => Boolean): Prop = Prop { (_, _, _) =>
+    if (p) Passed else Falsified("()", 0)
+  }
 
   def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
     (_, n, rng) =>
