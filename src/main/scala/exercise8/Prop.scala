@@ -2,7 +2,7 @@ package exercise8
 
 import exercise8.Prop._
 import exercise5.Stream
-import main.scala.exercise6.{Main, RNG, State}
+import main.scala.exercise6.{Main, RNG, SimpleRNG, State}
 
 sealed trait Result {
   def isFalsified: Boolean
@@ -49,6 +49,17 @@ object Prop {
   type SuccessCount = Int
   type TestCases = Int
   type MaxSize = Int
+
+  def run(p: Prop,
+          maxSize: Int = 100,
+          testCases: Int = 100,
+          rng: RNG = SimpleRNG(System.currentTimeMillis())): Unit =
+    p.run(maxSize, testCases, rng) match {
+      case Falsified(failure, successes) =>
+        println(s"! Falsified after $successes passed tests:\n $failure")
+      case Passed =>
+        println(s"+ OK, passed $testCases tests.")
+    }
 
   def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
     (_, n, rng) =>

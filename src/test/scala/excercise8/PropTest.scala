@@ -117,6 +117,8 @@ class PropTest extends FlatSpec with Matchers {
       !ns.exists(_ > max)
     }
     maxProp.run(100, 100, simpleRNG) shouldBe Passed
+
+    Prop.run(maxProp)
   }
 
   private def generate[A](gen: Gen[A]): A = {
