@@ -72,26 +72,26 @@ class PropTest extends FlatSpec with Matchers {
   }
 
   "Prop.&&" should "combine two Prop objects into one using logical AND" in {
-    val prop1 = Prop((_, _) => Passed)
-    val prop2 = Prop((_, _) => Falsified("something went wrong!", 0))
+    val prop1 = Prop((_, _, _) => Passed)
+    val prop2 = Prop((_, _, _) => Falsified("something went wrong!", 0))
 
     val combined = prop1 && prop2
-    combined.run(1, simpleRNG) shouldBe Falsified("something went wrong!", 0)
+    combined.run(1, 1, simpleRNG) shouldBe Falsified("something went wrong!", 0)
   }
 
   "Prop.||" should "combine two Prop objects into one using logical OR" in {
-    val prop1 = Prop((_, _) => Passed)
-    val prop2 = Prop((_, _) => Falsified("something went wrong!", 0))
+    val prop1 = Prop((_, _, _) => Passed)
+    val prop2 = Prop((_, _, _) => Falsified("something went wrong!", 0))
 
     val combined = prop1 || prop2
-    combined.run(1, simpleRNG) shouldBe Passed
+    combined.run(1, 1, simpleRNG) shouldBe Passed
   }
 
   "Prop.tag" should "prefix a message to a failing properties output message" in {
     val prefix = "Boom"
-    val prop1 = Prop((_, _) => Falsified("Error", 0))
+    val prop1 = Prop((_, _, _) => Falsified("Error", 0))
 
-    prop1.tag(prefix).run(1, simpleRNG) shouldBe Falsified(s"$prefix \n Error", 0)
+    prop1.tag(prefix).run(1, 1, simpleRNG) shouldBe Falsified(s"$prefix \n Error", 0)
   }
 
   "Gen.unsized" should "convert a Gen to SGen" in {
