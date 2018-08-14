@@ -152,6 +152,15 @@ object Gen {
       g.listOfN(Gen.unit(size))
     })
   }
+
+  def listOf1[A](g: Gen[A]): SGen[List[A]] = {
+    SGen(size => {
+      if (size <= 0)
+        g.listOfN(Gen.unit(1))
+      else
+        g.listOfN(Gen.unit(size))
+    })
+  }
 }
 
 case class SGen[A](forSize: Int => Gen[A]) {

@@ -112,13 +112,21 @@ class PropTest extends FlatSpec with Matchers {
 
   "List.max" should "give an item that is greater than or equal to every other element" in {
     val smallInt = Gen.choose(-10, 10)
-    val maxProp = Prop.forAll(Gen.listOf(smallInt)) { ns =>
+    val maxProp = Prop.forAll(Gen.listOf1(smallInt)) { ns =>
       val max = ns.max
       !ns.exists(_ > max)
     }
     maxProp.run(100, 100, simpleRNG) shouldBe Passed
 
     Prop.run(maxProp)
+  }
+
+  "Gen.listOf1" should "generate a non empty list" in {
+    val gen = Gen.boolean
+    val sgen = Gen.listOf1(gen)
+    generate(sgen(0)) should have size 1
+    generate(sgen(-1)) should have size 1
+    generate(sgen(2)) should have size 2
   }
 
   private def generate[A](gen: Gen[A]): A = {
