@@ -29,7 +29,7 @@ class PropTest extends FlatSpec with Matchers {
   "Gen.listOfN" should "generate a list of integers of size n" in {
     val gen = Gen.listOfN(5, Gen.choose(0, 5))
     val result = generate(gen)
-    result shouldBe a [List[Int]]
+    result shouldBe a[List[Int]]
     result should have size 5
   }
 
@@ -41,21 +41,21 @@ class PropTest extends FlatSpec with Matchers {
   "Gen (case class).listOfN" should "generate a list of integers of size n" in {
     val gen = Gen.choose(0, 5).listOfN(Gen.unit(5))
     val result = generate(gen)
-    result shouldBe a [List[Int]]
+    result shouldBe a[List[Int]]
     result should have size 5
   }
 
   it should "generate a list of booleans of a random size" in {
-    val gen = Gen.boolean.listOfN(Gen.choose(10,15))
+    val gen = Gen.boolean.listOfN(Gen.choose(10, 15))
     val result = generate(gen)
-    result shouldBe a [List[Boolean]]
+    result shouldBe a[List[Boolean]]
     result.size should be >= 10
     result.size should be < 15
   }
 
   "Gen.union" should "combine two generators of the same type into one by pulling values from each generator" in {
     val gen1 = Gen.choose(0, 100)
-    val gen2 = Gen.choose(250,500)
+    val gen2 = Gen.choose(250, 500)
     val unionGen = Gen.union(gen1, gen2)
     val result = generate(unionGen)
     result should be >= 0
@@ -64,7 +64,7 @@ class PropTest extends FlatSpec with Matchers {
 
   "Gen.weighted" should "combine two generators of the same type into one by pulling values from each based on a weight" in {
     val gen1 = Gen.choose(0, 100)
-    val gen2 = Gen.choose(250,500)
+    val gen2 = Gen.choose(250, 500)
     val unionGen = Gen.weighted((gen1, 0.2), (gen2, 0.8))
     val result = generate(unionGen)
     result should be >= 250
@@ -97,9 +97,17 @@ class PropTest extends FlatSpec with Matchers {
   "Gen.unsized" should "convert a Gen to SGen" in {
     val gen = Gen.boolean
     val sgen = gen.unsized
-    sgen shouldBe a [SGen[Boolean]]
+    sgen shouldBe a[SGen[Boolean]]
     sgen.forSize(123) shouldBe gen
     sgen.forSize(12345) shouldBe gen
+  }
+
+  "Gen.listOf" should "generate lists of the requested size" in {
+    val gen = Gen.boolean
+    val sgen = Gen.listOf(gen)
+    sgen shouldBe a[SGen[List[Boolean]]]
+    generate(sgen(2)) should have size 2
+    generate(sgen(5)) should have size 5
   }
 
   private def generate[A](gen: Gen[A]): A = {
