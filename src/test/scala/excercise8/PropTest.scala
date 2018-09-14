@@ -156,13 +156,13 @@ class PropTest extends FlatSpec with Matchers {
   }
 
   it should "prove that two Par[Ints] can be equal" in {
-    val pint: Gen[Par[Int]] = Gen.choose(0, 10).listOfN(Gen.choose(0, 20)).map(l =>
+    val pint: Gen[Par[Int]] = Gen.choose(-100, 100).listOfN(Gen.choose(0, 20)).map(l =>
       l.foldLeft(Par.unit(0))((p, i) =>
         Par.fork {
           Par.map2(p, Par.unit(i))(_ + _)
         })
     )
-    //    Prop.forAllPar(pint)(n => Par.equal(Par.map(n)(y => y), n)).run(100, 100, simpleRNG) shouldBe Passed
+//    Prop.forAllPar(pint)(i => Par.equal(Par.fork(i), i)) tag "fork" run(1, 1, simpleRNG) shouldBe Passed
   }
 
   private def generate[A](gen: Gen[A]): A = {
