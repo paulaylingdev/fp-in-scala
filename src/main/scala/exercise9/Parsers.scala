@@ -19,6 +19,10 @@ trait Parsers[ParseError, Parser[+ _]] {
 
   def listOfN[A](n: Int, p: Parser[A]): Parser[List[A]]
 
+  def many[A](a: Parser[A]): Parser[List[A]]
+
+  def map[A, B](a: Parser[A])(f: A => B): Parser[B]
+
   def succeed[A](a: A): Parser[A] = string("") map (_ => a)
 
   case class ParserOps[A](p: Parser[A]) {
@@ -26,9 +30,9 @@ trait Parsers[ParseError, Parser[+ _]] {
 
     def or[B >: A](p2: => Parser[B]): Parser[B] = self.or(p, p2)
 
-    def many(p: Parser[A]): Parser[List[A]] = ???
+    def many(p: Parser[A]): Parser[List[A]] = self.many(p)
 
-    def map[B](f: A => B): Parser[B] = ???
+    def map[B](f: A => B): Parser[B] = self.map(p)(f)
   }
 
   object Laws {
