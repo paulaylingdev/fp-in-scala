@@ -139,7 +139,7 @@ case class Gen[A](sample: State[RNG, A]) {
 
   def unsized: SGen[A] = SGen(_ => this)
 
-  def **[B](g2: Gen[B]): Gen[(A, B)] = (this map2 g2)((_, _))
+  def **[B](g2: Gen[B]): Gen[(A, B)] = (this map2 g2) ((_, _))
 }
 
 object Gen {
@@ -182,7 +182,7 @@ object Gen {
 
   def listOf1[A](g: Gen[A]): SGen[List[A]] = {
     SGen(size => {
-        g.listOfN(Gen.unit(size max 1))
+      g.listOfN(Gen.unit(size max 1))
     })
   }
 }

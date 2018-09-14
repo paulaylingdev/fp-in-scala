@@ -1,6 +1,7 @@
 package excercise8
 
 import exercise7.Par
+import exercise7.Par.Par
 import exercise8._
 import main.scala.exercise6.SimpleRNG
 import org.scalatest.{FlatSpec, Matchers}
@@ -132,13 +133,14 @@ class PropTest extends FlatSpec with Matchers {
   "List.sorted" should "sort a list of integers correctly" in {
     val smallInt = Gen.choose(-10, 10)
     val sortedProp = Prop.forAll(Gen.listOf(smallInt)) { input =>
-        def isSorted[T](s: Seq[T])(implicit ord: Ordering[T]): Boolean = s match {
-          case Seq() => true
-          case Seq(_) => true
-          case _ => s.sliding(2).forall{ case List(x, y) => ord.lteq(x, y)}
-        }
-        val sortedList = input.sorted
-        isSorted(sortedList)
+      def isSorted[T](s: Seq[T])(implicit ord: Ordering[T]): Boolean = s match {
+        case Seq() => true
+        case Seq(_) => true
+        case _ => s.sliding(2).forall { case List(x, y) => ord.lteq(x, y) }
+      }
+
+      val sortedList = input.sorted
+      isSorted(sortedList)
     }
     sortedProp.run(100, 100, simpleRNG) shouldBe Passed
   }
@@ -151,6 +153,16 @@ class PropTest extends FlatSpec with Matchers {
   it should "prove that two Pars can be equal" in {
     val pint = Gen.choose(0, 10) map (Par.unit(_))
     Prop.forAllPar(pint)(n => Par.equal(Par.map(n)(y => y), n)).run(100, 100, simpleRNG) shouldBe Passed
+  }
+
+  it should "prove that two Par[Ints] can be equal" in {
+    val pint: Gen[Par[Int]] = Gen.choose(0, 10).listOfN(Gen.choose(0, 20)).map(l =>
+      l.foldLeft(Par.unit(0))((p, i) =>
+        Par.fork {
+          Par.map2(p, Par.unit(i))(_ + _)
+        })
+    )
+    //    Prop.forAllPar(pint)(n => Par.equal(Par.map(n)(y => y), n)).run(100, 100, simpleRNG) shouldBe Passed
   }
 
   private def generate[A](gen: Gen[A]): A = {
