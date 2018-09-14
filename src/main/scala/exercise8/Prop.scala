@@ -1,7 +1,11 @@
 package exercise8
 
-import exercise8.Prop._
+import java.util.concurrent.Executors
+
 import exercise5.Stream
+import exercise7.Par.Par
+import exercise8.Gen.{choose, unit, weighted}
+import exercise8.Prop._
 import main.scala.exercise6.{Main, RNG, SimpleRNG, State}
 
 sealed trait Result {
@@ -97,6 +101,12 @@ object Prop {
       prop.run(max, n, rng)
   }
 
+  def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop = {
+    val S = weighted(choose(1, 4).map(Executors.newFixedThreadPool) -> 0.75,
+      unit(Executors.newCachedThreadPool) -> 0.25)
+    forAll(S ** g) { case s ** a => f(a)(s).get }
+  }
+
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] = Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
 
   def buildMsg[A](s: A, e: Exception): String =
@@ -114,6 +124,13 @@ case class Gen[A](sample: State[RNG, A]) {
     flatMap(input => Gen.unit(f(input)))
   }
 
+  def map2[B, C](b: Gen[B])(f: (A, B) => C): Gen[C] = {
+    for {
+      input <- this
+      input2 <- b
+    } yield f(input, input2)
+  }
+
   def listOfN(size: Gen[Int]): Gen[List[A]] = {
     size.flatMap(n => {
       Gen(State.sequence(List.fill(n)(this.sample)))
@@ -122,7 +139,7 @@ case class Gen[A](sample: State[RNG, A]) {
 
   def unsized: SGen[A] = SGen(_ => this)
 
-  def **[B](g2: Gen[B]): Gen[(A, B)] = ???
+  def **[B](g2: Gen[B]): Gen[(A, B)] = (this map2 g2)((_, _))
 }
 
 object Gen {
@@ -168,6 +185,10 @@ object Gen {
         g.listOfN(Gen.unit(size max 1))
     })
   }
+}
+
+object ** {
+  def unapply[A, B](arg: (A, B)): Option[(A, B)] = Option(arg)
 }
 
 case class SGen[A](forSize: Int => Gen[A]) {

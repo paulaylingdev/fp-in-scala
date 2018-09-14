@@ -2,8 +2,6 @@ package exercise7
 
 import java.util.concurrent.{Callable, ExecutorService, Future, TimeUnit}
 
-import scala.collection.immutable
-
 /*
 Exercise 7.1
 map2 signature
@@ -166,4 +164,6 @@ object Par {
       flatMap(b)((bb: B) => unit(f(aa, bb)))
     )
   }
+
+  def equal[A](p: Par[A], p2: Par[A]): Par[Boolean] = map2(p, p2)(_ == _)
 }

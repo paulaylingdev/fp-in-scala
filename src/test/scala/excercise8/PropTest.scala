@@ -1,8 +1,8 @@
 package excercise8
 
-import exercise8.Prop.TestCases
+import exercise7.Par
 import exercise8._
-import main.scala.exercise6.{RNG, SimpleRNG}
+import main.scala.exercise6.SimpleRNG
 import org.scalatest.{FlatSpec, Matchers}
 
 class PropTest extends FlatSpec with Matchers {
@@ -146,6 +146,11 @@ class PropTest extends FlatSpec with Matchers {
   "Prop.check" should "prove or falsify a simple test" in {
     Prop.check(4 == 5).run(100, 100, simpleRNG) shouldBe Falsified("()", 0)
     Prop.check(5 == 5).run(100, 100, simpleRNG) shouldBe Proved
+  }
+
+  it should "prove that two Pars can be equal" in {
+    val pint = Gen.choose(0, 10) map (Par.unit(_))
+    Prop.forAllPar(pint)(n => Par.equal(Par.map(n)(y => y), n)).run(100, 100, simpleRNG) shouldBe Passed
   }
 
   private def generate[A](gen: Gen[A]): A = {
