@@ -58,4 +58,8 @@ class MonoidTest extends FlatSpec with Matchers {
     foldRight(List(1,2,3), "")((a, b) => a.toString + b) shouldBe List(1,2,3).foldRight("")((a, b) => a.toString + b)
   }
 
+  "foldMapV" should "fold a list of elements into a single element" in {
+    foldMapV(IndexedSeq(1,2,3,4,5,6,7,8), stringMonoid)(_.toString) shouldBe "12345678"
+  }
+
 }
