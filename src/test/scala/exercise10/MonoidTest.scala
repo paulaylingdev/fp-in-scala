@@ -2,6 +2,8 @@ package exercise10
 
 import exercise10.Monoids._
 import exercise10.Laws._
+import exercise8.{Gen, Passed}
+import main.scala.exercise6.SimpleRNG
 import org.scalatest.{FlatSpec, Matchers}
 
 class MonoidTest extends FlatSpec with Matchers {
@@ -37,6 +39,11 @@ class MonoidTest extends FlatSpec with Matchers {
 
     associative(endoMonoid[String])(endoFunction, endoFunction2, endoFunction)
     identity(endoMonoid[String])(endoFunction2)
+  }
+
+  "intAddition" should "satisfy monoidLaws" in {
+    val simpleRNG = SimpleRNG(12345)
+    monoidLaws(intAddition, Gen.choose(-100, 100)).run(1000, 1000, simpleRNG) shouldBe Passed
   }
 
 }

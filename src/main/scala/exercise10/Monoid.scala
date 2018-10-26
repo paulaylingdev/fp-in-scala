@@ -1,5 +1,9 @@
 package exercise10
 
+import exercise10.Laws.{associative, identity}
+import exercise8.Prop._
+import exercise8.{Gen, Prop}
+
 trait Monoid[A] {
   def op(a1: A, a2: A): A
 
@@ -64,5 +68,13 @@ object Monoids {
     def zero: A => A = (a: A) => a
   }
 
-
+  def monoidLaws[A](m: Monoid[A], gen: Gen[A]): Prop =
+    forAll(
+      for {
+        x <- gen
+        y <- gen
+        z <- gen
+      } yield (x, y, z))(p =>
+        associative(m)(p._1, p._2, p._3)) &&
+    forAll(gen)(a => identity(m)(a))
 }
