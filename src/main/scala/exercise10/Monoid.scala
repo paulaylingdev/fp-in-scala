@@ -1,6 +1,8 @@
 package exercise10
 
 import exercise10.Laws.{associative, identity}
+import exercise7.Par
+import exercise7.Par.Par
 import exercise8.Prop._
 import exercise8.{Gen, Prop}
 
@@ -91,6 +93,16 @@ object Monoids {
       val (firstList, secondList) = v.splitAt(v.length / 2)
       m.op(foldMapV(firstList, m)(f), foldMapV(secondList, m)(f))
     }
+  }
+
+  def par[A](m: Monoid[A]): Monoid[Par[A]] = new Monoid[Par[A]] {
+    def op(a1: Par[A], a2: Par[A]): Par[A] = Par.map2(a1, a2)(m.op)
+
+    def zero: Par[A] = Par.unit(m.zero)
+  }
+
+  def parFoldMap[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): Par[B] = {
+    ???
   }
 
 }
