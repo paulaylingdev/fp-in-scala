@@ -60,6 +60,7 @@ class MonoidTest extends FlatSpec with Matchers {
 
   "foldMapV" should "fold a list of elements into a single element" in {
     foldMapV(IndexedSeq(1,2,3,4,5,6,7,8), stringMonoid)(_.toString) shouldBe "12345678"
+    foldMapV(IndexedSeq(), stringMonoid)(_.toString) shouldBe ""
   }
 
 }
