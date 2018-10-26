@@ -77,4 +77,8 @@ object Monoids {
       } yield (x, y, z))(p =>
         associative(m)(p._1, p._2, p._3)) &&
     forAll(gen)(a => identity(m)(a))
+
+  def concatenate[A](as: List[A], m: Monoid[A]): A = as.foldLeft(m.zero)(m.op)
+
+  def foldMap[A, B](as: List[A], m: Monoid[B])(f: A => B): B = concatenate(as.map(f), m)
 }

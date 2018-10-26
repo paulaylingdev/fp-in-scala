@@ -46,4 +46,12 @@ class MonoidTest extends FlatSpec with Matchers {
     monoidLaws(intAddition, Gen.choose(-100, 100)).run(1000, 1000, simpleRNG) shouldBe Passed
   }
 
+  "concatenate" should "concatenate a list of strings" in {
+    concatenate(List("A", "B", "C"), stringMonoid) shouldBe "ABC"
+  }
+
+  "foldMap" should "map elements in a list to a monoid and then concatenate them" in {
+    foldMap(List(1, 2, 3), stringMonoid)(_.toString) shouldBe "123"
+  }
+
 }
