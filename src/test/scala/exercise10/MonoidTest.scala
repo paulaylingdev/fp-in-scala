@@ -31,4 +31,12 @@ class MonoidTest extends FlatSpec with Matchers {
     identity(optionMonoid[Int])(Some(3)) shouldBe true
   }
 
+  "endoMonoid" should "be a monoid" in {
+    def endoFunction(s : String): String = s
+    def endoFunction2(s : String): String = s + "b"
+
+    associative(endoMonoid[String])(endoFunction, endoFunction2, endoFunction)
+    identity(endoMonoid[String])(endoFunction2)
+  }
+
 }
