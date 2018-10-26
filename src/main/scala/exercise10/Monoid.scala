@@ -41,15 +41,21 @@ object Monoids {
   }
 
   val booleanOr: Monoid[Boolean] = new Monoid[Boolean] {
-    override def op(a1: Boolean, a2: Boolean): Boolean = a1 || a2
+    def op(a1: Boolean, a2: Boolean): Boolean = a1 || a2
 
-    override def zero: Boolean = false
+    def zero: Boolean = false
   }
 
   val booleanAnd: Monoid[Boolean] = new Monoid[Boolean] {
-    override def op(a1: Boolean, a2: Boolean): Boolean = a1 && a2
+    def op(a1: Boolean, a2: Boolean): Boolean = a1 && a2
 
-    override def zero: Boolean = true
+    def zero: Boolean = true
+  }
+
+  def optionMonoid[A]: Monoid[Option[A]] = new Monoid[Option[A]] {
+    def op(a1: Option[A], a2: Option[A]): Option[A] = a1 orElse a2
+
+    def zero: Option[A] = None
   }
 
 

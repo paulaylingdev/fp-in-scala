@@ -26,4 +26,9 @@ class MonoidTest extends FlatSpec with Matchers {
     identity(booleanAnd)(true) shouldBe true
   }
 
+  "optionMonoid" should "be a monoid" in {
+    associative(optionMonoid[Int])(Some(5), None, Some(4)) shouldBe true
+    identity(optionMonoid[Int])(Some(3)) shouldBe true
+  }
+
 }
