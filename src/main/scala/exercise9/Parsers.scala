@@ -50,6 +50,14 @@ trait Parsers[ParseError, Parser[+ _]] {
 
   implicit def regex(r: Regex): Parser[String]
 
+  def letter : Parser[String] = "[a-zA-Z]".r
+
+  def digit: Parser[String] = """\d""".r
+
+  def whitespace: Parser[String] = """\s""".r
+
+  def scope[A](msg: String)(p: Parser[A]): Parser[A]
+
   case class ParserOps[A](p: Parser[A]) {
     def |[B >: A](p2: Parser[B]): Parser[B] = self.or(p, p2)
 
