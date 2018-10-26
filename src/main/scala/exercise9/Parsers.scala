@@ -26,7 +26,7 @@ trait Parsers[ParseError, Parser[+ _]] {
 
   def many[A](a: Parser[A]): Parser[List[A]] = map2(a, many(a))(_ :: _) or succeed(List())
 
-  def map[A, B](a: Parser[A])(f: A => B): Parser[B]
+  def map[A, B](p: Parser[A])(f: A => B): Parser[B] = p.flatMap(a => succeed(f(a)))
 
   def succeed[A](a: A): Parser[A] = string("") map (_ => a)
 
