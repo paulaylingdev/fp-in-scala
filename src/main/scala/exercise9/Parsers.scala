@@ -34,9 +34,17 @@ trait Parsers[ParseError, Parser[+ _]] {
 
   def many1[A](p: Parser[A]): Parser[List[A]] = map2(p, many(p))(_ :: _)
 
-  def product[A, B](p: Parser[A], p2: => Parser[B]): Parser[(A, B)]
+  def product[A, B](p: Parser[A], p2: => Parser[B]): Parser[(A, B)] =
+    for {
+      a <- p
+      b <- p2
+    } yield (a, b)
 
-  def map2[A, B, C](p: Parser[A], p2: => Parser[B])(f: (A, B) => C): Parser[C] = product(p, p2).map(prod => f(prod))
+  def map2[A, B, C](p: Parser[A], p2: => Parser[B])(f: (A, B) => C): Parser[C] =
+    for {
+      a <- p
+      b <- p2
+    } yield f(a, b)
 
   def flatMap[A, B](p: Parser[A])(f: A => Parser[B]): Parser[B]
 
