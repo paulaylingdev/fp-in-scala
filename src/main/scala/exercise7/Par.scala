@@ -166,4 +166,16 @@ object Par {
   }
 
   def equal[A](p: Par[A], p2: Par[A]): Par[Boolean] = map2(p, p2)(_ == _)
+
+  def sequenceBalanced[A](as: IndexedSeq[Par[A]]): Par[IndexedSeq[A]] = fork {
+    if (as.isEmpty) unit(Vector())
+    else if (as.length == 1) map(as.head)(a => Vector(a))
+    else {
+      val (l, r) = as.splitAt(as.length / 2)
+      map2(sequenceBalanced(l), sequenceBalanced(r))(_ ++ _)
+    }
+  }
+
+  def parMap[A, B](as: IndexedSeq[A])(f: A => B): Par[IndexedSeq[B]] =
+    sequenceBalanced(as.map(asyncF(f)))
 }

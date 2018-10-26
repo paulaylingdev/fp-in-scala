@@ -1,8 +1,7 @@
 package exercise10
 
 import exercise10.Laws.{associative, identity}
-import exercise7.Par
-import exercise7.Par.Par
+import exercise7.Par._
 import exercise8.Prop._
 import exercise8.{Gen, Prop}
 
@@ -77,8 +76,8 @@ object Monoids {
         y <- gen
         z <- gen
       } yield (x, y, z))(p =>
-        associative(m)(p._1, p._2, p._3)) &&
-    forAll(gen)(a => identity(m)(a))
+      associative(m)(p._1, p._2, p._3)) &&
+      forAll(gen)(a => identity(m)(a))
 
   def concatenate[A](as: List[A], m: Monoid[A]): A = as.foldLeft(m.zero)(m.op)
 
@@ -96,13 +95,15 @@ object Monoids {
   }
 
   def par[A](m: Monoid[A]): Monoid[Par[A]] = new Monoid[Par[A]] {
-    def op(a1: Par[A], a2: Par[A]): Par[A] = Par.map2(a1, a2)(m.op)
+    def op(a1: Par[A], a2: Par[A]): Par[A] = map2(a1, a2)(m.op)
 
-    def zero: Par[A] = Par.unit(m.zero)
+    def zero: Par[A] = unit(m.zero)
   }
 
   def parFoldMap[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): Par[B] = {
-    ???
+    flatMap(parMap(v)(f)) { a =>
+      foldMapV(a, par(m))(unit)
+    }
   }
 
 }

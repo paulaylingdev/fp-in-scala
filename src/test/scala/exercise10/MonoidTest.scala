@@ -69,8 +69,7 @@ class MonoidTest extends FlatSpec with Matchers {
   }
 
   "parFoldMap" should "fold a list of elements into a single element in parallel" in {
-    pending
-    parFoldMap(IndexedSeq(1,2,3,4,5,6,7,8), stringMonoid)(_.toString) shouldBe "12345678"
+    parFoldMap(IndexedSeq(1,2,3,4,5,6,7,8), stringMonoid)(_.toString) shouldBe a[Par[String]]
   }
 
 }
